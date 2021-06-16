@@ -17,6 +17,7 @@ import {
 
 //Vistas
 import Inicio from "./Components/Inicio";
+import Login from "./Components/Login";
 
 
 const base_URL ="prueba";
@@ -63,6 +64,7 @@ const App=()=> {
           {/*Seleccion de vistas*/}
           <Switch>
             <Route exact path="/"><Inicio url={base_URL}/></Route>
+            <Route  path="/login"><Login /></Route>
           </Switch>
         </div>
       </Router>

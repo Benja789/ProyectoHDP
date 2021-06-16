@@ -1,43 +1,10 @@
 import React  from 'react';
-
-
-/*import "../VistasLogin/Login.css";
-class  Login extends Component{
-    render(){
-        return(
-
-<div className="containerPrincipal">
-    <div className="containerPrincipal">
-        <div className = "form-group">
-            <label>Usuario: </label>
-            <br />
-
-            <input
-                type= "text"
-                className = "form-control" />
-                <br />
-                <label> Contraseña</label>
-                <br />
-            <input
-                type= "password"
-                className="form-control" />
-                <br/>
-                <button className="btn btn-primary"> Iniciar Secion </button>
-                </div>
-                </div>
-                </div>
-                
-                
-           
-        );
-    }
-
-}*/
-
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import Checkbox from '@material-ui/core/Checkbox';
 
 import{
     Grid,
-    makeStyles,Paper,typograf
+    makeStyles,Paper,Avatar,TextField,Button
 }from '@material-ui/core';
 
 const useStyle = makeStyles((theme)=>({
@@ -60,11 +27,32 @@ const useStyle = makeStyles((theme)=>({
 }*/
 
 const Login = () =>{
-    const paperStyle={padding:20,heigth:'70vh',width:280,MARGIN:"20px auto"}
+    const paperStyle={padding: 20,height:'60vh',width:'25%',margin:"20px auto"}
+    const avatarStyle ={backgroundColor:'#3055a7'}
     return (
         <Grid>
             <Paper elevation={10} style={paperStyle}>
-        Ingresar
+                <Grid align = 'center'>
+                <Avatar style = {avatarStyle}></Avatar>
+                 <h1>Iniciar Secion</h1>
+
+                </Grid>
+
+                <TextField label="Usuario" placeholder='Ingrese Usuario' fullWidth required/>
+               
+                <TextField label="Contraseña" placeholder='Ingrese Contraseña' type='password' fullWidth required/>
+          
+    <FormControlLabel
+        control={
+          <Checkbox     
+            name="checkedB"
+            color="primary"
+          />
+        }
+        label="Recordar Contraseña"
+      />
+
+      <Button type ='submit' color='primary' variant="contained" fullWidth>Ingresar</Button> 
 
             </Paper>
         </Grid>
