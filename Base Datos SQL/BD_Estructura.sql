@@ -1,12 +1,10 @@
 /*==============================================================*/
 /* DBMS name:      MySQL 5.0                                    */
-/* Created on:     8/6/2021 12:00:34                            */
+/* Created on:     16/6/2021 12:41:59                           */
 /*==============================================================*/
 
 
 drop table if exists GASOLINA;
-
-drop table if exists HISTORIALIMPLEMENTADOS;
 
 drop table if exists PERIODO;
 
@@ -21,22 +19,9 @@ drop table if exists ZONA;
 /*==============================================================*/
 create table GASOLINA
 (
-   IDGASOLINA           int not null,
+   IDGASOLINA           varchar(5) not null,
    TIPOGASOLINA         char(15) not null,
-   primary key (IDGASOLINA),
-   key AK_GASOLINA (TIPOGASOLINA)
-);
-
-/*==============================================================*/
-/* Table: HISTORIALIMPLEMENTADOS                                */
-/*==============================================================*/
-create table HISTORIALIMPLEMENTADOS
-(
-   IDHISTORIAL          int not null,
-   IDPERIODO            int,
-   PRECIOIMPLEMENTADO   float not null,
-   VARIACIONIMPLEMENTADA float not null,
-   primary key (IDHISTORIAL)
+   primary key (IDGASOLINA)
 );
 
 /*==============================================================*/
@@ -44,9 +29,7 @@ create table HISTORIALIMPLEMENTADOS
 /*==============================================================*/
 create table PERIODO
 (
-   IDPERIODO            int not null,
-   IDGASOLINA           int,
-   IDZONA               int,
+   IDPERIODO            int not null auto_increment,
    FECHAINICIO          date not null,
    FECHAFIN             date not null,
    primary key (IDPERIODO)
@@ -57,11 +40,14 @@ create table PERIODO
 /*==============================================================*/
 create table PREDICCION
 (
-   IDPREDICCION         int not null,
-   IDPERIODO            int,
+   IDPREDICCION         int not null auto_increment,
    DUI                  varchar(10),
-   PERCIOPREDICTO       float not null,
-   VARIACIONPREDICTA    float not null,
+   IDPERIODO            int,
+   IDZONA               varchar(5),
+   IDGASOLINA           varchar(5),
+   PRECIO               float not null,
+   VARIACION            float not null,
+   ESTADO               varchar(12) not null,
    primary key (IDPREDICCION)
 );
 
@@ -71,11 +57,11 @@ create table PREDICCION
 create table USUARIO
 (
    DUI                  varchar(10) not null,
-   NOMBRE               varchar(40) not null,
-   APELLIDO             varchar(40) not null,
+   NOMBRES              varchar(40) not null,
+   APELLIDOS            varchar(40) not null,
    DEPARTAMENTO         varchar(20) not null,
    MUNICIPIO            varchar(20) not null,
-   FECHANACIMIENTO      date not null,
+   FECHA_NACIMIENTO     date not null,
    CORREO               varchar(40) not null,
    CONTRASENA           varchar(16) not null,
    primary key (DUI)
@@ -86,24 +72,20 @@ create table USUARIO
 /*==============================================================*/
 create table ZONA
 (
-   IDZONA               int not null,
+   IDZONA               varchar(5) not null,
    NOMBREZONA           varchar(15) not null,
-   primary key (IDZONA),
-   key AK_ZONA (NOMBREZONA)
+   primary key (IDZONA)
 );
 
-alter table HISTORIALIMPLEMENTADOS add constraint FK_TIENE foreign key (IDPERIODO)
+alter table PREDICCION add constraint FK_REFERENCE_3 foreign key (IDPERIODO)
       references PERIODO (IDPERIODO) on delete restrict on update restrict;
 
-alter table PERIODO add constraint FK_EXISTE foreign key (IDZONA)
-      references ZONA (IDZONA) on delete restrict on update restrict;
-
-alter table PERIODO add constraint FK_POSEE foreign key (IDGASOLINA)
+alter table PREDICCION add constraint FK_REFERENCE_4 foreign key (IDGASOLINA)
       references GASOLINA (IDGASOLINA) on delete restrict on update restrict;
 
-alter table PREDICCION add constraint FK_HACE foreign key (IDPERIODO)
-      references PERIODO (IDPERIODO) on delete restrict on update restrict;
-
-alter table PREDICCION add constraint FK_PERTENECE foreign key (DUI)
+alter table PREDICCION add constraint FK_REFERENCE_5 foreign key (DUI)
       references USUARIO (DUI) on delete restrict on update restrict;
+
+alter table PREDICCION add constraint FK_REFERENCE_6 foreign key (IDZONA)
+      references ZONA (IDZONA) on delete restrict on update restrict;
 
