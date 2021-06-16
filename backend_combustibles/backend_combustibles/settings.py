@@ -39,6 +39,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'GestionUsuario',
+    'GestionarTablasSecundarias',
+    'Prediccion',
 ]
 
 MIDDLEWARE = [
@@ -85,7 +88,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME':'ProyectoHDP',
         'USER':'root',
-        'PASSWORD':'root',
+        'PASSWORD':'admin',
         'HOST':'localhost',
         'PORT':'3306',
     }
