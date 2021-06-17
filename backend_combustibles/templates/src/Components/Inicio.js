@@ -1,13 +1,17 @@
-import React from 'react';
+import React,{useState} from 'react';
 import PropTypes from 'prop-types';
+import axios from "axios";
 import { 
     makeStyles,
     AppBar,
     Tabs,
     Tab,
     Typography,
-    Box
+    Box,
+    Toolbar,
+    Button
  } from '@material-ui/core';
+import {Link} from "react-router-dom";
 import Tarjeta  from "./VistasInicio/TarjetasPrecios";
 import Tabla from './VistasInicio/Tabla';
 //import MapaSalvador from '../';
@@ -50,25 +54,44 @@ const useStyles = makeStyles((theme) => ({
     flexGrow: 1,
     backgroundColor: theme.palette.background.paper,
   },
+  button:{
+    position: 'absolute',
+    right: '50px',
+    top: '25px',
+    background:'#E5ECFF',
+  },
 }));
 
-const Inicio = (url) => {
+const Inicio = (props) => {
   const classes = useStyles();
-  const [value, setValue] = React.useState(0);
-  const bull = <span className={classes.bullet}>•</span>;
-  const zonas  =[{
-    nombre:"Occidental",
-    fecha:"fecha",
-    precio:"215.2"
-  }]
+  const [value, setValue] = useState(0);
+
+  const getTablaInicial = async() =>{
+    axios.get(props.url+"/jsonprediccion").then((res)=>{
+      const prediccion = res.data;
+      console.log(prediccion);
+    })
+  }
+
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
-  };
 
+  };
+  
   return (
     <div className={classes.root}>
+      {/*Barra de superior */}
       <AppBar position="static"  style={{ background: "#2E3B55" }}> 
+        <Toolbar className={classes.toolbar}>
+          <h1 className={classes.h1} align="center">
+          Precios de los combustibles El Salvador
+          </h1>
+          <Button className={classes.button} variant="outlined" color="primary" >Iniciar sesion
+            <Link to="/login"></Link>
+          </Button>
+          <hr/>
+        </Toolbar>
         <Tabs value={value} onChange={handleChange} aria-label="simple tabs example" align="center">
           <Tab label="Precios por zona" {...a11yProps(0)} />
           <Tab label="Historial de precios" {...a11yProps(1)} />
@@ -76,13 +99,12 @@ const Inicio = (url) => {
         </Tabs>
       </AppBar>
       <TabPanel value={value} index={0}>
-
-          {/*Precios por zonas impresos*/}
-        <Tarjeta zona={zonas}/>
+        {/*Precios por zonas impresos*/}
+        <Tarjeta />
         <Tarjeta />
         <Tarjeta />
       </TabPanel>
-      <TabPanel value={value} index={1}>
+      <TabPanel value={value} onClick={getTablaInicial} index={1}>
         Tabla de Historial
         <Tabla />
       </TabPanel>

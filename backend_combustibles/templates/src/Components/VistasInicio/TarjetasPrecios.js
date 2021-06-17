@@ -2,9 +2,7 @@ import React from 'react';
 import {
     makeStyles, 
     Card, 
-    CardActions,
     CardContent,
-    Button,
     Typography
 } from '@material-ui/core';
 
@@ -31,9 +29,9 @@ const useStyles = makeStyles({
   },
 });
 
-const Tarjeta = (props) =>{
+const Tarjeta = () =>{
   const classes = useStyles();
-  console.log(props)
+
   return (
     <div className={classes.div}>
         <Card className={classes.root}>
@@ -47,13 +45,10 @@ const Tarjeta = (props) =>{
             <Typography className={classes.pos} color="textSecondary">
             aa
             </Typography>
-            <Typography variant="body1" component="p">
+            <Typography variant="p" component="div">
             well meaning and kindly.
             </Typography>
         </CardContent>
-        <CardActions>
-            <Button size="small">Learn More</Button>
-        </CardActions>
         </Card>
     </div>
   );

@@ -7,7 +7,7 @@ class Gasolina(models.Model):
 
     class Meta:
         managed = False
-        db_table = 'gasolina'
+        db_table = 'GASOLINA'
 
 
 class Periodo(models.Model):
@@ -17,7 +17,7 @@ class Periodo(models.Model):
 
     class Meta:
         managed = False
-        db_table = 'periodo'
+        db_table = 'PERIODO'
 
 
 class Zona(models.Model):
@@ -26,4 +26,4 @@ class Zona(models.Model):
 
     class Meta:
         managed = False
-        db_table = 'zona'
+        db_table = 'ZONA'

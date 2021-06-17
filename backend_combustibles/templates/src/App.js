@@ -5,66 +5,36 @@ import {
   BrowserRouter as Router,
   Switch,
   Route,
-  Link  
+  //Link  
 } from "react-router-dom";
-import {
-  makeStyles,
-  AppBar, 
-  Toolbar,
-  Button
-} from "@material-ui/core";
 //import LogoESA from "./Media/Logo El Salvador.png"
 
 //Vistas
 import Inicio from "./Components/Inicio";
 import Login from "./Components/Login";
 
-
-const base_URL ="prueba";
-
-const useStyles = makeStyles((theme) => ({
-  root: {
-    flexGrow: 1,
-    backgroundColor: theme.palette.background.paper,
-  },
-  h1: {
-    display: "inline-block",
-  },
-  button:{
-    position: 'absolute',
-    //width: '1440px',
-    //height: '72px',
-    right: '50px',
-    top: '25px',
-    background:'#E5ECFF',
-    //margin: '30px auto',
-    //position: 'right',
-    //align:'right',
-    //width: 'calc(100% - 50px)',
-    //height: '200px',
-  },
-}));
-
 const App=()=> {
-  const classes = useStyles();
+  
+  const base_URL ="http://localhost:8000";
+/*
+
+  const getZonas = async()=>{
+    axios.get(base_URL+"/jsonzonas").then((res)=>{
+      const z=res.data;
+      console.log(res.data)
+      setZonas(z);
+      console.log(zonas);
+    })
+  }
+*/
   return (
       <Router>
         <div >
-          {/*Barra de superior */}
-          <AppBar position="static" style={{ background: "#2E3B55" }}>
-            <Toolbar className={classes.toolbar}>
-              <h1 className={classes.h1} align="center">
-                Precios de los combustibles El Salvador
-              </h1>
-              <Button className={classes.button} variant="outlined" color="primary" >Iniciar sesion</Button>
-              <hr/>
-            </Toolbar>
-          </AppBar>
-
           {/*Seleccion de vistas*/}
           <Switch>
-            <Route exact path="/"><Inicio url={base_URL}/></Route>
-            <Route  path="/login"><Login /></Route>
+            {/*Peticion onload={getDatos}*/}
+            <Route exact  path="/"><Inicio url={base_URL}/></Route>
+            <Route exact path="/login"><Login /></Route>
           </Switch>
         </div>
       </Router>

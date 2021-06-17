@@ -16,4 +16,4 @@ class Prediccion(models.Model):
 
     class Meta:
         managed = False
-        db_table = 'prediccion'
+        db_table = 'PREDICCION'
