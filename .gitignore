@@ -10,6 +10,9 @@ node_modules
 
 env 
 backend_combusitbles/GestionarTablasSecundarias/__pycache__
+backend_combusitbles/Gestionarusuario/__pycache__
+backend_combusitbles/Prediccion/__pycache__
+
 
 # misc
 .DS_Store
