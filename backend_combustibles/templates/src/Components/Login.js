@@ -5,6 +5,8 @@ import{
     Grid,
     makeStyles,Paper,Avatar,TextField,Button
 }from '@material-ui/core';
+import {Link} from "react-router-dom";
+
 
 const useStyle = makeStyles((theme)=>({
  root: {
@@ -18,17 +20,21 @@ const useStyle = makeStyles((theme)=>({
     height:'60vh',
     width:'25%',
     margin:"20px auto",
+ },
+ button:{
+    margin:"20px auto",
+     
  }
 }));
 
 const Login = () =>{
-    const clasess = useStyle();
+    const classes = useStyle();
 
     return (
         <Grid>
-            <Paper className={clasess.paper} elevation={10} >
+            <Paper className={classes.paper} elevation={10} >
                 <Grid align = 'center'>
-                    <Avatar className={clasess.avatar}></Avatar>
+                    <Avatar className={classes.avatar}></Avatar>
                     <h1>Iniciar Secion</h1>
                 </Grid>
                 <TextField label="Usuario" placeholder='Ingrese Usuario' fullWidth required/>               
@@ -42,6 +48,9 @@ const Login = () =>{
                     label="Recordar Contraseña"
                 />
                 <Button type ='submit' color='primary' variant="contained" fullWidth>Ingresar</Button> 
+                <Link to ="/">
+                    <Button className={classes.button}type ='submit' color='primary' variant="contained" fullWidth>Cancelar</Button>
+                </Link>
             </Paper>
         </Grid> 
     );

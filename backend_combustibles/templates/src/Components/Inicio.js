@@ -65,6 +65,7 @@ const useStyles = makeStyles((theme) => ({
 const Inicio = (props) => {
   const classes = useStyles();
   const [value, setValue] = useState(0);
+  const [zonas, setZonas]= useState();
 
   const getTablaInicial = async() =>{
     axios.get(props.url+"/jsonprediccion").then((res)=>{
@@ -73,6 +74,14 @@ const Inicio = (props) => {
     })
   }
 
+  const getZonas = async()=>{
+    axios.get(props.url+"/jsonzonas").then((res)=>{
+      const z=res.data;
+      console.log(res.data)
+      setZonas(z);
+      console.log(zonas);
+    })
+  }
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
@@ -80,16 +89,16 @@ const Inicio = (props) => {
   };
   
   return (
-    <div className={classes.root}>
+    <div className={classes.root} onLoad={getZonas}>
       {/*Barra de superior */}
       <AppBar position="static"  style={{ background: "#2E3B55" }}> 
         <Toolbar className={classes.toolbar}>
           <h1 className={classes.h1} align="center">
           Precios de los combustibles El Salvador
           </h1>
-          <Button className={classes.button} variant="outlined" color="primary" >Iniciar sesion
-            <Link to="/login"></Link>
-          </Button>
+          <Link to="/login">
+            <Button className={classes.button} variant="outlined" color="primary" >Iniciar sesion</Button>
+          </Link>
           <hr/>
         </Toolbar>
         <Tabs value={value} onChange={handleChange} aria-label="simple tabs example" align="center">
