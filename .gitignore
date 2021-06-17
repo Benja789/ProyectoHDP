@@ -9,6 +9,7 @@ node_modules
 /coverage
 
 env 
+backend_combusitbles/GestionarTablasSecundarias/__pycache__
 
 # misc
 .DS_Store
