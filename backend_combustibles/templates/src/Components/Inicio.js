@@ -65,21 +65,23 @@ const useStyles = makeStyles((theme) => ({
 const Inicio = (props) => {
   const classes = useStyles();
   const [value, setValue] = useState(0);
-  const [zonas, setZonas]= useState();
+  const [zonas, setZonas]= useState([]);
+  const [prediccion, setPrediccion] = useState([]);
+  const [periodo, setPeriodo] = useState([]);
 
   const getTablaInicial = async() =>{
     axios.get(props.url+"/jsonprediccion").then((res)=>{
-      const prediccion = res.data;
-      console.log(prediccion);
+      setPrediccion([...prediccion, ...res.data]);
+    })
+    axios.get(props.url+"/jsonperiodo").then((res)=>{
+      setPeriodo([...periodo, ...res.data]);
     })
   }
 
   const getZonas = async()=>{
     axios.get(props.url+"/jsonzonas").then((res)=>{
       const z=res.data;
-      console.log(res.data)
-      setZonas(z);
-      console.log(zonas);
+      setZonas([...zonas, ...z]);
     })
   }
 
@@ -91,7 +93,7 @@ const Inicio = (props) => {
   return (
     <div className={classes.root} onLoad={getZonas}>
       {/*Barra de superior */}
-      <AppBar position="static"  style={{ background: "#2E3B55" }}> 
+      <AppBar position="static" onLoad ={getZonas} style={{ background: "#2E3B55" }}> 
         <Toolbar className={classes.toolbar}>
           <h1 className={classes.h1} align="center">
           Precios de los combustibles El Salvador
@@ -102,20 +104,20 @@ const Inicio = (props) => {
           <hr/>
         </Toolbar>
         <Tabs value={value} onChange={handleChange} aria-label="simple tabs example" align="center">
-          <Tab label="Precios por zona" {...a11yProps(0)} />
-          <Tab label="Historial de precios" {...a11yProps(1)} />
+          <Tab label="Precios por zona"  {...a11yProps(0)} />
+          <Tab label="Historial de precios" onClick={getTablaInicial}  {...a11yProps(1)} />
           <Tab label="Graficos" {...a11yProps(2)} />
         </Tabs>
       </AppBar>
       <TabPanel value={value} index={0}>
         {/*Precios por zonas impresos*/}
-        <Tarjeta />
-        <Tarjeta />
-        <Tarjeta />
+        {zonas.map((z) =>(
+          <Tarjeta zona={z} />
+        ))}
       </TabPanel>
-      <TabPanel value={value} onClick={getTablaInicial} index={1}>
+      <TabPanel value={value} index={1}>
         Tabla de Historial
-        <Tabla />
+        <Tabla prediccion ={prediccion} periodo={periodo}/>
       </TabPanel>
       <TabPanel value={value} index={2}>
         Graficos

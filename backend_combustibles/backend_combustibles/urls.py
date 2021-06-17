@@ -13,7 +13,6 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
-from GestionarTablasSecundarias.views import getDatos_zonas
 from django.contrib import admin
 from django.urls import path
 from django.views.generic import TemplateView
@@ -23,6 +22,9 @@ from GestionarTablasSecundarias.views import *
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', TemplateView.as_view(template_name="index.html")),
+    path('login/', TemplateView.as_view(template_name="index.html")),
     path('jsonprediccion', getDatos_Prediccion),
-    path('jsonzonas', getDatos_zonas),
+    path('jsonzonas', sendData_zonas),
+    path('jsonperiodo', sendData_periodo),
+
 ]

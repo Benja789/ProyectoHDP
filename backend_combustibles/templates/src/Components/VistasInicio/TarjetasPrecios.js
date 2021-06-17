@@ -29,18 +29,18 @@ const useStyles = makeStyles({
   },
 });
 
-const Tarjeta = () =>{
+const Tarjeta = (props) =>{
   const classes = useStyles();
-
+  const zon = props.zona
   return (
     <div className={classes.div}>
         <Card className={classes.root}>
         <CardContent>
             <Typography className={classes.title} color="textSecondary" gutterBottom>
-            aa
+            {zon.nombrezona}
             </Typography>
             <Typography variant="h5" component="h2">
-            goa
+            {zon.nombrezona}
             </Typography>
             <Typography className={classes.pos} color="textSecondary">
             aa
