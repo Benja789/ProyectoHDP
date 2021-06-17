@@ -6,5 +6,7 @@ from Prediccion.models import Prediccion
 
 # Create your views here.
 def getDatos_Prediccion (request):
-    prediccion = list(Prediccion.objects.values())
+
+    prediccion = list(Prediccion.objects.values().order_by('-idprediccion')[:6])
+    
     return JsonResponse(prediccion, safe=False)
