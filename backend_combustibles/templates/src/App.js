@@ -11,6 +11,7 @@ import {
 //Vistas
 import Inicio from "./Components/Inicio";
 import Login from "./Components/Login";
+import Usuario from "./Components/Usuario";
 
 const App=()=> {
   
@@ -34,6 +35,7 @@ const App=()=> {
             {/*Peticion onload={getDatos}*/}
             <Route exact  path="/"><Inicio url={base_URL}/></Route>
             <Route exact path="/login"><Login /></Route>
+            <Route exact path ="/Usuario"><Usuario/></Route>
           </Switch>
         </div>
       </Router>
