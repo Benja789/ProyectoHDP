@@ -1,6 +1,6 @@
 import './App.css';
-import React from 'react';
-//import axios from "axios";
+import React, {useState} from 'react';
+import axios from "axios";
 import {
   BrowserRouter as Router,
   Switch,
@@ -13,33 +13,42 @@ import Inicio from "./Components/Inicio";
 import Login from "./Components/Login";
 import Usuario from "./Components/Usuario";
 
-const App=()=> {
-  
-  const base_URL ="http://localhost:8000";
-/*
 
-  const getZonas = async()=>{
+const base_URL ="http://localhost:8000";
+
+class App extends React.Component {
+  
+  constructor(props){
+    super(props);
+    this.state={
+      zonas :{
+        idZona :"",
+        nombreZona:"",
+      },
+    }
+  }
+ 
+  getZonas = async()=>{
     axios.get(base_URL+"/jsonzonas").then((res)=>{
       const z=res.data;
-      console.log(res.data)
-      setZonas(z);
-      console.log(zonas);
     })
   }
-*/
-  return (
-      <Router>
-        <div >
-          {/*Seleccion de vistas*/}
-          <Switch>
-            {/*Peticion onload={getDatos}*/}
-            <Route exact  path="/"><Inicio url={base_URL}/></Route>
-            <Route exact path="/login"><Login /></Route>
-            <Route exact path ="/Usuario"><Usuario/></Route>
-          </Switch>
-        </div>
-      </Router>
-  );
+  
+  render(){
+    return (
+        <Router>
+          <div >
+            {/*Seleccion de vistas*/}
+            <Switch>
+              {/*Peticion onload={getDatos}*/}
+              <Route exact  path="/"><Inicio url={base_URL} /></Route>
+              <Route exact path="/login"><Login /></Route>
+              <Route exact path ="/usuario"><Usuario/></Route>
+            </Switch>
+          </div>
+        </Router>
+    );
+  }
 }
 
 export default App;

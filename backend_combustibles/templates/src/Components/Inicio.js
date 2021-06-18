@@ -1,4 +1,4 @@
-import React,{useState} from 'react';
+import React,{useState, useEffect} from 'react';
 import PropTypes from 'prop-types';
 import axios from "axios";
 import { 
@@ -65,11 +65,12 @@ const useStyles = makeStyles((theme) => ({
 const Inicio = (props) => {
   const classes = useStyles();
   const [value, setValue] = useState(0);
-  const [zonas, setZonas]= useState([]);
+  const zonas = props.zona;
   const [prediccion, setPrediccion] = useState([]);
   const [periodo, setPeriodo] = useState([]);
 
   const getTablaInicial = async() =>{
+    console.log("Zonas"+props.zonas)
     axios.get(props.url+"/jsonprediccion").then((res)=>{
       setPrediccion([...prediccion, ...res.data]);
     })
@@ -78,12 +79,9 @@ const Inicio = (props) => {
     })
   }
 
-  const getZonas = async()=>{
-    axios.get(props.url+"/jsonzonas").then((res)=>{
-      const z=res.data;
-      setZonas([...zonas, ...z]);
-    })
-  }
+  useEffect(() => {
+    document.title="Inicio";
+  });
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
@@ -91,9 +89,9 @@ const Inicio = (props) => {
   };
   
   return (
-    <div className={classes.root} onLoad={getZonas}>
+    <div className={classes.root}>
       {/*Barra de superior */}
-      <AppBar position="static" onLoad ={getZonas} style={{ background: "#2E3B55" }}> 
+      <AppBar position="static" style={{ background: "#303F9F" }}> 
         <Toolbar className={classes.toolbar}>
           <h1 className={classes.h1} align="center">
           Precios de los combustibles El Salvador
@@ -110,10 +108,9 @@ const Inicio = (props) => {
         </Tabs>
       </AppBar>
       <TabPanel value={value} index={0}>
-        {/*Precios por zonas impresos*/}
-        {zonas.map((z) =>(
-          <Tarjeta zona={z} />
-        ))}
+        <Tarjeta zona ={props.zonas}/>
+        <Tarjeta zona ={props.zonas}/>
+        <Tarjeta zona ={props.zonas}/>
       </TabPanel>
       <TabPanel value={value} index={1}>
         Tabla de Historial
