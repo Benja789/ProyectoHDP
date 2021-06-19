@@ -77,28 +77,30 @@ const Inicio = (props) => {
   const [value, setValue] = useState(0);
   const [prediccion, setPrediccion] = useState([]);
   const [periodo, setPeriodo] = useState([]);
-  const zonas =props.state.zonas;
-  const vigentes=props.state.vigentes;
+  const [zonas, setZonas] = useState([]);
+  //const vigentes=props.state.vigentes;
 
   const getTablaInicial = async() =>{
     console.log(props.zona)
     axios.get(props.url+"/jsonprediccion").then((res)=>{
-      setPrediccion([...prediccion, ...res.data]);
+      setPrediccion(res.data);
     })
     axios.get(props.url+"/jsonperiodo").then((res)=>{
-      setPeriodo([...periodo, ...res.data]);
+      setPeriodo(res.data);
     })
   }
 
-  const consola = ()=>{
-    console.log(vigentes.splice(0, (vigentes.length/3)))
-    console.log(vigentes.splice(0, (vigentes.length/2)))
-    console.log(vigentes)
+  
+  const getDatosVigentes = async()=>{
+    axios.get(props.url+"/jsonzonas").then((res)=>{
+      const z=res.data;
+      setZonas(z);
+    })
   }
+
   useEffect(() => {
     document.title="Inicio";   
-    vigentes.reverse()
-
+    getDatosVigentes();
   }, []);
 
   const handleChange = (event, newValue) => {
@@ -128,11 +130,9 @@ const Inicio = (props) => {
         <img className={classes.media} src={MapaSalvador} alt="Mapa de El Salvador"/>
         <br/>
         <br/>
-        <Tarjeta nombre ={zonas[0].nombrezona}  />{/*6-8 */}
-        <Tarjeta nombre ={zonas[1].nombrezona} />{/*3-5 */}
-        <Tarjeta nombre ={zonas[2].nombrezona} />{/*0-2 */}
-        <br />
-        <Button onClick={consola}>Vigentes</Button>
+        {zonas[0] !== undefined && <Tarjeta zona={zonas[0]}/>}
+        {zonas[1] !== undefined && <Tarjeta zona={zonas[1]}/>}
+        {zonas[2] !== undefined && <Tarjeta zona={zonas[2]}/>}
       </TabPanel>
       <TabPanel value={value} index={1}>
         Tabla de Historial

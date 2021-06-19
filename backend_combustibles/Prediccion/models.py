@@ -3,6 +3,7 @@ from GestionUsuario.models import Usuario
 from GestionarTablasSecundarias.models import Zona
 from GestionarTablasSecundarias.models import Periodo
 from GestionarTablasSecundarias.models import Gasolina
+
 # Create your models here.
 class Prediccion(models.Model):
     idprediccion = models.AutoField(db_column='IDPREDICCION', primary_key=True)  # Field name made lowercase.
