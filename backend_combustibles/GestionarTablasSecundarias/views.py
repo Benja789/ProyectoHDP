@@ -10,9 +10,9 @@ from Prediccion.models import Prediccion
 def sendData_zonas (request):
     zonas = list(Zona.objects.values())
     prediccion = list(Prediccion.objects.values( 'idperiodo_id','idzona_id', 'idgasolina_id', 'precio', 'variacion').filter(estado='Aplicado').order_by('-idprediccion')[:9])
-    #for i in range(3):
-     #   for j in range(3):
-     #       zonas[i].insert(prediccion[j])
+    for i in range(3):
+        for j in range(3):
+            zonas[i].add(prediccion[j])
 
     return JsonResponse (zonas, safe = False)
 
