@@ -11,10 +11,12 @@ import {
     Toolbar,
     Button
  } from '@material-ui/core';
-import {Link} from "react-router-dom";
+import {
+  Link
+} from "react-router-dom";
 import Tarjeta  from "./VistasInicio/TarjetasPrecios";
 import Tabla from './VistasInicio/Tabla';
-//import MapaSalvador from '../';
+import MapaSalvador from '../Media/MapaSalvadorZonas.png';
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -56,21 +58,30 @@ const useStyles = makeStyles((theme) => ({
   },
   button:{
     position: 'absolute',
+    width:'10%',
     right: '50px',
     top: '25px',
     background:'#E5ECFF',
+  },
+  media:{
+    display:'block',
+    position:'relative',
+    width:'40%',
+    top: '30%',
+    left: '28%',
   },
 }));
 
 const Inicio = (props) => {
   const classes = useStyles();
   const [value, setValue] = useState(0);
-  const zonas = props.zona;
   const [prediccion, setPrediccion] = useState([]);
   const [periodo, setPeriodo] = useState([]);
+  const zonas =props.state.zonas;
+  const vigentes=props.state.vigentes;
 
   const getTablaInicial = async() =>{
-    console.log("Zonas"+props.zonas)
+    console.log(props.zona)
     axios.get(props.url+"/jsonprediccion").then((res)=>{
       setPrediccion([...prediccion, ...res.data]);
     })
@@ -79,13 +90,19 @@ const Inicio = (props) => {
     })
   }
 
+  const consola = ()=>{
+    console.log(vigentes.splice(0, (vigentes.length/3)))
+    console.log(vigentes.splice(0, (vigentes.length/2)))
+    console.log(vigentes)
+  }
   useEffect(() => {
-    document.title="Inicio";
-  });
+    document.title="Inicio";   
+    vigentes.reverse()
+
+  }, []);
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
-
   };
   
   return (
@@ -97,7 +114,7 @@ const Inicio = (props) => {
           Precios de los combustibles El Salvador
           </h1>
           <Link to="/login">
-            <Button className={classes.button} variant="outlined" color="primary" >Iniciar sesion</Button>
+            <Button className={classes.button} variant="contained" >Iniciar sesion</Button>
           </Link>
           <hr/>
         </Toolbar>
@@ -108,9 +125,14 @@ const Inicio = (props) => {
         </Tabs>
       </AppBar>
       <TabPanel value={value} index={0}>
-        <Tarjeta zona ={props.zonas}/>
-        <Tarjeta zona ={props.zonas}/>
-        <Tarjeta zona ={props.zonas}/>
+        <img className={classes.media} src={MapaSalvador} alt="Mapa de El Salvador"/>
+        <br/>
+        <br/>
+        <Tarjeta nombre ={zonas[0].nombrezona}  />{/*6-8 */}
+        <Tarjeta nombre ={zonas[1].nombrezona} />{/*3-5 */}
+        <Tarjeta nombre ={zonas[2].nombrezona} />{/*0-2 */}
+        <br />
+        <Button onClick={consola}>Vigentes</Button>
       </TabPanel>
       <TabPanel value={value} index={1}>
         Tabla de Historial

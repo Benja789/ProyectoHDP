@@ -13,3 +13,7 @@ def sendData_zonas (request):
 def sendData_periodo (request):
     periodo =list(Periodo.objects.values())
     return JsonResponse(periodo, safe=False)
+
+def ultimoPeriodo (request):
+    periodoVigencia = list(Periodo.objects.values().order_by('-idperiodo')[:1])
+    return JsonResponse(periodoVigencia, safe=False)

@@ -1,6 +1,6 @@
 import React from 'react';
-import Grid, { GridSpacing } from '@material-ui/core/Grid';
-import { createMuiTheme } from '@material-ui/core/styles';
+import Grid from '@material-ui/core/Grid';
+//import { createMuiTheme } from '@material-ui/core/styles';
 
 
 import {
@@ -53,7 +53,7 @@ const useStyle = makeStyles((theme) => ({
   }
 
 
-}));
+}));/*
 const theme = createMuiTheme({
   palette: {
     primary: {
@@ -61,7 +61,7 @@ const theme = createMuiTheme({
     },
     
   },
-});
+});*/
 
 
 const Usuario = () => {

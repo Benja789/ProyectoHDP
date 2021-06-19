@@ -31,15 +31,15 @@ const useStyles = makeStyles({
 
 const Tarjeta = (props) =>{
   const classes = useStyles();
-  const zon = props.zona
+
   return (
     <div className={classes.div}>
         <Card className={classes.root}>
         <CardContent>
             <Typography className={classes.title} color="textSecondary" gutterBottom>Periodo</Typography>
-            <Typography variant="h5" component="h2">Zona</Typography>
+            <Typography variant="h5" component="h2">Zona {props.nombre}</Typography>
             <Typography className={classes.pos} color="textSecondary">Tipo de gasolina</Typography>
-            <Typography variant="p" component="div">Especial: </Typography>
+            <Typography variant="p" component="div">Especial: {props.combustibles}</Typography>
             <Typography variant="p" component="div">Regular: </Typography>
             <Typography variant="p" component="div">Diesel: </Typography>
         </CardContent>

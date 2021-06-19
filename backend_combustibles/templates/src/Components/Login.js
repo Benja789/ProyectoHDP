@@ -1,77 +1,120 @@
-import React, {useEffect} from 'react';
+import React, {useState,useEffect} from 'react';
 import{
     makeStyles,
     Avatar,
     TextField,
     Button,
     Card, 
-    CardContent,
     Typography,
     FormControlLabel, 
-    Checkbox,
-    CardActions
+    Checkbox
 }from '@material-ui/core';
 import {Link} from "react-router-dom";
+import {useForm} from "react-hook-form";
 
 
 const useStyle = makeStyles((theme)=>({
  root: {
-     width:'50%',
+     width: '350px',
      display: 'inline-block',
-     padding: '6px',
+     //padding: '6px',
      position: 'center',
  },
  avatar:{
-    backgroundColor:'#3055a7'
+    display: 'flex',
+    backgroundColor:'#3055a7',
+    margin: theme.spacing(4),
  },
- paper:{
-    padding: 20,
-    height:'60vh',
-    width:'25%',
-    margin:"20px auto",
- },
- bullet: {
-    display: 'inline-block',
-    margin: '0 2px',
-    transform: 'scale(0.8)',
-  },
- button:{
+ title:{
     display: 'block',
-    margin:"20px auto",
-     
- }
+    postion:'right',
+    margin: '-70px 0 0 95px',
+ },
+ button:{
+    display: 'flex',
+//    margin:"20px auto",     
+    margin: theme.spacing(3),
+    minWidth:'300px'
+ },
+ div:{
+    position: 'absolute',
+    top: '40%',
+    left: '44%',
+    margin: '-100px 0 0 -100px',
+ },
+ textf:{
+    display:'flex',
+    position: 'relative',
+    margin: theme.spacing(2),
+    minWidth:'300px'
+  },
+  fieldBox:{
+    transform: "scale(0.8)",
+    margin: theme.spacing(1),
+  }
 }));
 
 const Login = () =>{
     const classes = useStyle();
-    const bull = <span className={classes.bullet}>•</span>;
+    const {register, formState:{errors}, handleSubmit} = useForm();
+    const [entradas, setEntradas] = useState({
+        nombre:'',
+        contraseña:''
+    });
+
+    const iniciarSesion = (data, e) =>{
+        console.log(data)
+        setEntradas([...entradas, ...data]);
+        //console.log(entradas)
+    }
 
     useEffect(() => {
         document.title="Iniciar sesion";
       });
 
     return (
-        <Card className={classes.root}>
-            <CardContent>
-                <Avatar className={classes.avatar}></Avatar>
-                <Typography className={classes.title} variant="h5" gutterBottom>
-                Iniciar sesion</Typography>
-                <TextField label="Usuario"></TextField>
-                <br/>
-                <TextField label="Contraseña"></TextField>
-            </CardContent>
-            <CardActions>
-                <FormControlLabel
-                    control={<Checkbox name="checkedB" color="primary"/>}
-                    label="Recordar Contraseña"/>
-                <Button className={classes.root} type ='submit' color='primary' variant="contained" fullWidth>Ingresar</Button> 
-                <br/>
-                <Link to ="/">
-                    <Button className={classes.button} type ='submit' color='primary' variant="contained" fullWidth>Cancelar</Button>
-                </Link>
-            </CardActions>
-        </Card>
-        
+        <div className={classes.div}>
+            <Card className={classes.root}>
+            <form onSubmit={handleSubmit(iniciarSesion)}>
+                    <Avatar className={classes.avatar}></Avatar>
+                    <Typography className={classes.title} variant="h5" >
+                    Iniciar sesion</Typography>
+                    <TextField 
+                        className={classes.textf}
+                        label="Usuario"
+                        {...register("usuario",{
+                            required:{
+                                value:true,
+                                message:"Campo obligatorio"
+                            }
+                        })}/>
+                    <p>{errors?.nombre?.message}</p>
+                    <TextField 
+                        className={classes.textf}
+                        label="Contraseña"
+                        {...register("contraseña",{
+                            required:{
+                                value:true,
+                                message:"Campo obligatorio"
+                            }
+                        })}/>
+                        <p>{errors?.nombre?.message}</p>
+                    <FormControlLabel
+                        control={<Checkbox className={classes.fieldBox}name="checkedB" color="primary"/>}
+                        label="Recordar Contraseña"/>
+                    <Button 
+                        className={classes.button} 
+                        type ='submit' 
+                        color='primary' 
+                        variant="contained" 
+                        onClick={iniciarSesion}
+                        >Ingresar</Button> 
+                    <Link to ="/inicio">
+                        <Button className={classes.button} type ='submit' color='primary' variant="contained" >Cancelar</Button>
+                    </Link>
+            </form>
+            </Card>
+        </div>
     );
 }
 
