@@ -9,7 +9,9 @@ import {
     Typography,
     Box,
     Toolbar,
-    Button
+    Button, 
+    Menu, 
+    MenuItem
  } from '@material-ui/core';
 import {
   Link
@@ -80,22 +82,44 @@ const Inicio = (props) => {
   const [prediccion, setPrediccion] = useState([]);
   const [periodo, setPeriodo] = useState([]);
   const [zonas, setZonas] = useState([]);
+  const [anchorEl, setAnchorEl] = useState(null);
+  const [nuevoPeriodo, setNuevoPeriodo] = useState();
+  const [selectedIndex, setSelectedIndex] = React.useState(1);
+  const meses = [
+    "Enero",
+    "Febrero",
+    "Marzo",
+    "Abril",
+    "Mayo",
+    "Junio",
+    "Julio",
+    "Agosto",
+    "Septiembre",
+    "Octubre",
+    "Noviembre",
+    "Diciembre",
+  ];
 
   //Hace una peticion de los periodos e el historial de la tabla 
   const getTablaInicial = async() =>{
     axios.get(props.url+"/jsonhistorial").then((res)=>{
       setPrediccion(res.data);
+    }).catch(err =>{
+      window.alert("No se han podido traer los datos de la tabla");
     })
     axios.get(props.url+"/jsonperiodo").then((res)=>{
       setPeriodo(res.data);
+    }).catch(err=>{
+      window.alert("No se han podido traer los datos relacionados con el periodo");
     })
   }
 
   //Hace una peticion de los precios que se encuentran vigentes
   const getDatosVigentes = async()=>{
     axios.get(props.url+"/jsonpreciosvigentes").then((res)=>{
-      const z=res.data;
-      setZonas(z);
+      setZonas(res.data);
+    }).catch(err=>{
+      window.alert("Los datos de los precios vigentes no se han podido traer")
     })
   }
 
@@ -109,6 +133,41 @@ const Inicio = (props) => {
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
+
+  //Ancho del menu
+  const handleClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };    
+
+  // solicitar un periodo en especifico
+  const seleccionarPeriodo = async(formData)=>{
+    axios.post(props.url+"/jsonhistorial", formData).then(res=>{
+      setNuevoPeriodo(res.data);
+      
+    }).catch(err =>{
+      console.log(nuevoPeriodo)
+      window.alert("Algo salio mal, no se ha podido traer el periodo seleccionado")
+    })
+  }
+  
+  const periodoN = (index ) =>{
+    let formData = new FormData();
+    formData.append("idperiodo", periodo[index].idperiodo);
+    formData.append("fechainicio", periodo[index].fechainicio);
+    formData.append("fechafin", periodo[index].fechafin);
+    seleccionarPeriodo(formData);
+    console.log(nuevoPeriodo)
+  }
+
+  const resetear = ()=>{
+    setNuevoPeriodo(undefined);
+  }
+  //Cierre del menu
+  const handleClose =async (event, index) => {
+
+    setAnchorEl(null);
+  };
+
   
   //Vista a renderizarse
   return (
@@ -139,7 +198,30 @@ const Inicio = (props) => {
         {zonas[2] !== undefined && <Tarjeta zona={zonas[2]}/>}
       </TabPanel>
       <TabPanel value={value} index={1}>
-        <Tabla prediccion ={prediccion} periodo={periodo} url ={props.url}/>
+        <Typography variant="h5">Tabla del historial de los precios</Typography>
+        <Button  aria-controls="simple-menu" aria-haspopup="true" onClick={handleClick}>Selecciona Periodo</Button>
+        <Button  aria-controls="simple-menu" aria-haspopup="true" onClick={resetear}>Mostrar tabla inicial</Button>
+        <Menu
+          id="simple-menu"
+          anchorEl={anchorEl}
+          keepMounted
+          open={Boolean(anchorEl)}
+          onClose={handleClose}>
+          {periodo.map((p,index)=>(
+            <MenuItem 
+              key={p.idperiodo}     
+              selected={index === selectedIndex}
+              onClick={(event)=>{
+                periodoN(index);
+                handleClose(event,index);}}
+            >{
+              new Date(p.fechainicio).getDate() + " "+meses[new Date(p.fechainicio).getMonth()] + " " + new Date(p.fechainicio).getFullYear()} - 
+              {" "+new Date(p.fechafin).getDate() + " "+meses[new Date(p.fechafin).getMonth()] + " " + new Date(p.fechafin).getFullYear()} 
+            </MenuItem>
+          ))}
+        </Menu>
+        {nuevoPeriodo === undefined && <Tabla prediccion={prediccion}/>}
+        {nuevoPeriodo!== undefined && <Tabla prediccion={nuevoPeriodo}/>}
       </TabPanel>
       <TabPanel value={value} index={2}>
         Graficos

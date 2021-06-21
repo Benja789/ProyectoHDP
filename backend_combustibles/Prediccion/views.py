@@ -47,15 +47,46 @@ def sendData_Historial (request):
                     diccionario["fechafin"] =periodo[j]["fechafin"].strftime("%Y/%m/%d")
             datosEnviados.append(diccionario)
             del(diccionario)
-
+        del(historial, periodo)
         return JsonResponse(datosEnviados, safe=False)
 
     elif request.method == 'POST':
         #Si el metodo es un post, manda el periodo seleccionado
-        #post_inicio = request.POST['fechainicio']
-        post_fin = request.POST['fechafin']
-        print(post_fin)
-        respuesta = list(Prediccion.objects.values())
+        historial = list(Prediccion.objects.filter(estado='Aplicado', idperiodo_id=request.POST['idperiodo']).values(
+            "idprediccion",
+            "idperiodo_id",
+            "idzona_id",
+            "idgasolina_id",
+            "precio",
+            "variacion"
+        ).order_by('-idprediccion'))    
+        periodo = list(Periodo.objects.filter(idperiodo=request.POST['idperiodo']).values())       
+        respuesta = []
+        for i in range(len(historial)):
+            diccionario ={
+                "idprediccion": "",
+                "idperiodo_id":"",
+                "fechainicio":"",
+                "fechafin":"",
+                "idzona_id": "",
+                "idgasolina_id": "",
+                "precio": "",
+                "variacion": ""
+            }
+            diccionario["idprediccion"] = historial[i]["idprediccion"]
+            diccionario["idperiodo_id"] = historial[i]["idperiodo_id"]
+            diccionario["idzona_id"] = historial[i]["idzona_id"]
+            diccionario["idgasolina_id"] = historial[i]["idgasolina_id"]
+            diccionario["precio"]= historial[i]["precio"]
+            diccionario["variacion"]=historial[i]["variacion"]
+            for j in range(len(periodo)):
+                if periodo[j]["idperiodo"] == diccionario["idperiodo_id"]:
+                    diccionario["fechainicio"] =periodo[j]["fechainicio"].strftime("%Y/%m/%d")
+                    diccionario["fechafin"] =periodo[j]["fechafin"].strftime("%Y/%m/%d")
+            respuesta.append(diccionario)
+            del(diccionario)
+        del(historial, periodo)
+
         return JsonResponse (respuesta, safe=False)
 
 
