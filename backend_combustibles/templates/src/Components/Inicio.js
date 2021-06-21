@@ -18,6 +18,7 @@ import Tarjeta  from "./VistasInicio/TarjetasPrecios";
 import Tabla from './VistasInicio/Tabla';
 import MapaSalvador from '../Media/MapaSalvadorZonas.png';
 
+//Funciones secundarias de la app bara
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
 
@@ -51,6 +52,7 @@ function a11yProps(index) {
   };
 }
 
+//Estilo css
 const useStyles = makeStyles((theme) => ({
   root: {
     flexGrow: 1,
@@ -78,11 +80,10 @@ const Inicio = (props) => {
   const [prediccion, setPrediccion] = useState([]);
   const [periodo, setPeriodo] = useState([]);
   const [zonas, setZonas] = useState([]);
-  //const vigentes=props.state.vigentes;
 
+  //Hace una peticion de los periodos e el historial de la tabla 
   const getTablaInicial = async() =>{
-    console.log(props.zona)
-    axios.get(props.url+"/jsonprediccion").then((res)=>{
+    axios.get(props.url+"/jsonhistorial").then((res)=>{
       setPrediccion(res.data);
     })
     axios.get(props.url+"/jsonperiodo").then((res)=>{
@@ -90,23 +91,26 @@ const Inicio = (props) => {
     })
   }
 
-  
+  //Hace una peticion de los precios que se encuentran vigentes
   const getDatosVigentes = async()=>{
-    axios.get(props.url+"/jsonzonas").then((res)=>{
+    axios.get(props.url+"/jsonpreciosvigentes").then((res)=>{
       const z=res.data;
       setZonas(z);
     })
   }
 
+  //Cambios previos a que la pagina se cargue o se monte el componente
   useEffect(() => {
     document.title="Inicio";   
     getDatosVigentes();
   }, []);
 
+  //Ayuda a dar tamaño a la appbar
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
   
+  //Vista a renderizarse
   return (
     <div className={classes.root}>
       {/*Barra de superior */}
@@ -135,8 +139,7 @@ const Inicio = (props) => {
         {zonas[2] !== undefined && <Tarjeta zona={zonas[2]}/>}
       </TabPanel>
       <TabPanel value={value} index={1}>
-        Tabla de Historial
-        <Tabla prediccion ={prediccion} periodo={periodo}/>
+        <Tabla prediccion ={prediccion} periodo={periodo} url ={props.url}/>
       </TabPanel>
       <TabPanel value={value} index={2}>
         Graficos

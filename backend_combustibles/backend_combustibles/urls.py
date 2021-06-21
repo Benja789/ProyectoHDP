@@ -16,19 +16,19 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from django.views.generic import TemplateView
-from Prediccion.views import *
-from GestionarTablasSecundarias.views import *
+from Prediccion.views import sendData_Historial
+from GestionarTablasSecundarias.views import sendData_periodo, sendData_zonas
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', TemplateView.as_view(template_name="index.html")),
-    path('inicio', TemplateView.as_view(template_name="index.html")),
-    path('login/', TemplateView.as_view(template_name="index.html")),
-    path('usuario/', TemplateView.as_view(template_name="index.html")),
-    path('jsonprediccion', getDatos_Prediccion),
-    path('jsonzonas', sendData_zonas),
+    path('', TemplateView.as_view(template_name="index.html")), #Cargador
+    path('inicio', TemplateView.as_view(template_name="index.html")), #Inicio o pagina principal
+    path('login/', TemplateView.as_view(template_name="index.html")), #Inicio de sesion de usuario
+    path('usuario/', TemplateView.as_view(template_name="index.html")), #Vista del usuario
+    path('jsonhistorial', sendData_Historial), #Historial de los precios aplicados de la pagina inicio
+    path('jsonpreciosvigentes', sendData_zonas), #Datos de la pagina del inicio
     path('jsonperiodo', sendData_periodo),
-    path('jsonultimoperiodo', ultimoPeriodo),
-    path('jsonvigentes',preciosVigentes),
+    #path('jsonultimoperiodo', ultimoPeriodo),
+    #path('jsonvigentes',preciosVigentes),
 
 ]
