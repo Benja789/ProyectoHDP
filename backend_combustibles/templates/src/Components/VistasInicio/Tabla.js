@@ -50,27 +50,35 @@ const Tabla = (props) =>{
     "Diciembre",
   ];
   const [anchorEl, setAnchorEl] = useState(null);
+  const [periodoElegido, setPeriodoElegido] =useState({
+    idperiodo:"",
+    fechainicio:"",
+    fechafin:""
+  })
 
   //Ancho del menu
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
 
+  const crearPeriodo =(index)=>{
+    setPeriodoElegido(periodoElegido,periodo[index]);
+  }
+
   // solicitar un periodo en especifico
   const seleccionarPeriodo = async(index)=>{
-    //setPeriodoElegido({periodo[index]})
     //console.log(props.periodo[index]);
     let formData = new FormData();
-    formData.append("idperiodo", periodo[index].idperiodo);
-    formData.append("fechainicio", periodo[index].fechainicio);
-    formData.append("fechafin", periodo[IDBIndex].fechafin);
+    formData.append("idperiodo", periodoElegido.idperiodo);
+    formData.append("fechainicio", periodoElegido.fechainicio);
+    formData.append("fechafin", periodoElegido.fechafin);
     
     axios({
       method: "POST",
       url: props.url+"/jsonhistorial",
-     /* headers:{
+      headers:{
         "Content-Type": "multipart/form-data",
-      },*/
+      },
       data: periodo[index],
     });
   }
@@ -98,8 +106,8 @@ const Tabla = (props) =>{
           selected={index === selectedIndex}
           onClick={(event)=>{
             seleccionarPeriodo(event,index);
-            handleClose(event,index);}}>
-          {
+            handleClose(event,index);}}
+        >{
           new Date(p.fechainicio).getDate() + " "+meses[new Date(p.fechainicio).getMonth()] + " " + new Date(p.fechainicio).getFullYear()} - 
           {" "+new Date(p.fechafin).getDate() + " "+meses[new Date(p.fechafin).getMonth()] + " " + new Date(p.fechafin).getFullYear()} 
         </MenuItem>
