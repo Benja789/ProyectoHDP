@@ -24,7 +24,7 @@ const App =()=> {
             {/*Peticion onload={getDatos}*/}
             <Route exact  path="/"><Loading/></Route>
             <Route exact  path="/inicio"><Inicio url={base_URL}/></Route>
-            <Route exact path="/login"><Login /></Route>
+            <Route exact path="/login"><Login url={base_URL}/></Route>
             <Route exact path ="/usuario"><Usuario/></Route>
           </Switch>
         </div>

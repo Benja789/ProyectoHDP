@@ -18,6 +18,7 @@ from django.urls import path
 from django.views.generic import TemplateView
 from Prediccion.views import sendData_Historial
 from GestionarTablasSecundarias.views import sendData_periodo, sendData_zonas
+from GestionUsuario.views import iniciarSesion
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -28,7 +29,7 @@ urlpatterns = [
     path('jsonhistorial', sendData_Historial), #Historial de los precios aplicados de la pagina inicio
     path('jsonpreciosvigentes', sendData_zonas), #Datos de la pagina del inicio
     path('jsonperiodo', sendData_periodo),
-    #path('jsonultimoperiodo', ultimoPeriodo),
+    path('jsoniniciarsesion', iniciarSesion),
     #path('jsonvigentes',preciosVigentes),
 
 ]

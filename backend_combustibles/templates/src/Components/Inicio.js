@@ -11,7 +11,8 @@ import {
     Toolbar,
     Button, 
     Menu, 
-    MenuItem
+    MenuItem,
+    Paper
  } from '@material-ui/core';
 import {
   Link
@@ -19,6 +20,7 @@ import {
 import Tarjeta  from "./VistasInicio/TarjetasPrecios";
 import Tabla from './VistasInicio/Tabla';
 import MapaSalvador from '../Media/MapaSalvadorZonas.png';
+import Grafico from './VistasInicio/Grafico';
 
 //Funciones secundarias de la app bara
 function TabPanel(props) {
@@ -67,6 +69,12 @@ const useStyles = makeStyles((theme) => ({
     top: '25px',
     background:'#E5ECFF',
   },
+  paper: {
+    padding: 20,
+    height: '115vh',
+    width: '90%',
+    margin: "20px auto",
+  },
   media:{
     display:'block',
     position:'relative',
@@ -84,7 +92,7 @@ const Inicio = (props) => {
   const [zonas, setZonas] = useState([]);
   const [anchorEl, setAnchorEl] = useState(null);
   const [nuevoPeriodo, setNuevoPeriodo] = useState();
-  const [selectedIndex, setSelectedIndex] = React.useState(1);
+  var selectedIndex;
   const meses = [
     "Enero",
     "Febrero",
@@ -125,9 +133,9 @@ const Inicio = (props) => {
 
   //Cambios previos a que la pagina se cargue o se monte el componente
   useEffect(() => {
-    document.title="Inicio";   
+    document.title="Inicio";  
     getDatosVigentes();
-  }, []);
+  },[]);
 
   //Ayuda a dar tamaño a la appbar
   const handleChange = (event, newValue) => {
@@ -150,6 +158,7 @@ const Inicio = (props) => {
     })
   }
   
+  //Metodo que se encarga de crear un objeto para mandarlo al servidor
   const periodoN = (index ) =>{
     let formData = new FormData();
     formData.append("idperiodo", periodo[index].idperiodo);
@@ -159,12 +168,12 @@ const Inicio = (props) => {
     console.log(nuevoPeriodo)
   }
 
+  //Metodo que se encarga de resetear la tabla
   const resetear = ()=>{
     setNuevoPeriodo(undefined);
   }
   //Cierre del menu
   const handleClose =async (event, index) => {
-
     setAnchorEl(null);
   };
 
@@ -189,43 +198,46 @@ const Inicio = (props) => {
           <Tab label="Graficos" {...a11yProps(2)} />
         </Tabs>
       </AppBar>
-      <TabPanel value={value} index={0}>
-        <img className={classes.media} src={MapaSalvador} alt="Mapa de El Salvador"/>
-        <br/>
-        <br/>
-        {zonas[0] !== undefined && <Tarjeta zona={zonas[0]}/>}
-        {zonas[1] !== undefined && <Tarjeta zona={zonas[1]}/>}
-        {zonas[2] !== undefined && <Tarjeta zona={zonas[2]}/>}
-      </TabPanel>
-      <TabPanel value={value} index={1}>
-        <Typography variant="h5">Tabla del historial de los precios</Typography>
-        <Button  aria-controls="simple-menu" aria-haspopup="true" onClick={handleClick}>Selecciona Periodo</Button>
-        <Button  aria-controls="simple-menu" aria-haspopup="true" onClick={resetear}>Mostrar tabla inicial</Button>
-        <Menu
-          id="simple-menu"
-          anchorEl={anchorEl}
-          keepMounted
-          open={Boolean(anchorEl)}
-          onClose={handleClose}>
-          {periodo.map((p,index)=>(
-            <MenuItem 
-              key={p.idperiodo}     
-              selected={index === selectedIndex}
-              onClick={(event)=>{
-                periodoN(index);
-                handleClose(event,index);}}
-            >{
-              new Date(p.fechainicio).getDate() + " "+meses[new Date(p.fechainicio).getMonth()] + " " + new Date(p.fechainicio).getFullYear()} - 
-              {" "+new Date(p.fechafin).getDate() + " "+meses[new Date(p.fechafin).getMonth()] + " " + new Date(p.fechafin).getFullYear()} 
-            </MenuItem>
-          ))}
-        </Menu>
-        {nuevoPeriodo === undefined && <Tabla prediccion={prediccion}/>}
-        {nuevoPeriodo!== undefined && <Tabla prediccion={nuevoPeriodo}/>}
-      </TabPanel>
-      <TabPanel value={value} index={2}>
-        Graficos
-      </TabPanel>
+      <Paper className={classes.paper} elevation={10}>
+        <TabPanel value={value} index={0}>
+          <img className={classes.media} src={MapaSalvador} alt="Mapa de El Salvador"/>
+          <br/>
+          <br/>
+          {zonas[0] !== undefined && <Tarjeta zona={zonas[0]}/>}
+          {zonas[1] !== undefined && <Tarjeta zona={zonas[1]}/>}
+          {zonas[2] !== undefined && <Tarjeta zona={zonas[2]}/>}
+        </TabPanel>
+        <TabPanel value={value} index={1}>
+          <Typography variant="h5">Tabla del historial de los precios</Typography>
+          <Button  aria-controls="simple-menu" aria-haspopup="true" onClick={handleClick}>Selecciona Periodo</Button>
+          <Button  aria-controls="simple-menu" aria-haspopup="true" onClick={resetear}>Mostrar tabla inicial</Button>
+          <Menu
+            id="simple-menu"
+            anchorEl={anchorEl}
+            keepMounted
+            open={Boolean(anchorEl)}
+            onClose={handleClose}>
+            {periodo.map((p,index)=>(
+              <MenuItem 
+                key={p.idperiodo}     
+                selected={index === selectedIndex}
+                onClick={(event)=>{
+                  periodoN(index);
+                  handleClose(event,index);}}
+              >{
+                new Date(p.fechainicio).getDate() + " "+meses[new Date(p.fechainicio).getMonth()] + " " + new Date(p.fechainicio).getFullYear()} - 
+                {" "+new Date(p.fechafin).getDate() + " "+meses[new Date(p.fechafin).getMonth()] + " " + new Date(p.fechafin).getFullYear()} 
+              </MenuItem>
+            ))}
+          </Menu>
+          {nuevoPeriodo === undefined && <Tabla prediccion={prediccion}/>}
+          {nuevoPeriodo!== undefined && <Tabla prediccion={nuevoPeriodo}/>}
+        </TabPanel>
+        <TabPanel value={value} index={2}>
+          Graficos
+          <Grafico/>
+        </TabPanel>
+      </Paper>
     </div>
   );
 }

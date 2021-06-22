@@ -9,9 +9,9 @@ class Usuario(models.Model):
     departamento = models.CharField(db_column='DEPARTAMENTO', max_length=20)  # Field name made lowercase.
     municipio = models.CharField(db_column='MUNICIPIO', max_length=20)  # Field name made lowercase.
     fecha_nacimiento = models.DateField(db_column='FECHA_NACIMIENTO')  # Field name made lowercase.
-    correo = models.CharField(db_column='CORREO', max_length=40)  # Field name made lowercase.
-    contrasena = models.CharField(db_column='CONTRASENA', max_length=16)  # Field name made lowercase.
+    correo = models.CharField(db_column='CORREO', unique=True, max_length=40)  # Field name made lowercase.
+    password = models.CharField(db_column='PASSWORD', max_length=255)  # Field name made lowercase.
 
     class Meta:
         managed = False
-        db_table = 'usuario'
+        db_table = 'USUARIO'

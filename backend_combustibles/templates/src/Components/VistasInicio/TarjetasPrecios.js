@@ -16,7 +16,6 @@ import {
 const useStyles = makeStyles({
   root: {
     display: 'block',
-    padding: '6px',
     },
   div:{
     display:'inline-block',
@@ -35,7 +34,8 @@ const useStyles = makeStyles({
     marginBottom: 12,
   },  
   table: {
-    minWidth: "25%",
+    minWidth: "40%",
+    //width:'40%',
   },
 });
 

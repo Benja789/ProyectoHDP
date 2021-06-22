@@ -1,17 +1,58 @@
-import React from 'react';
-import Grid from '@material-ui/core/Grid';
-//import { createMuiTheme } from '@material-ui/core/styles';
-
+import React, {useState} from 'react';
+import PropTypes from 'prop-types';
 
 import {
-  makeStyles, AppBar, Typography, Button, Avatar, Paper, Tab, Tabs, Table, TableBody, TableCell, 
-  TableContainer, TableRow, TableHead,List,ListItem,ListItemText,Divider
-
+  makeStyles, 
+  AppBar, 
+  Typography, 
+  Button, 
+  Avatar, 
+  Paper, 
+  Tab, 
+  Tabs, 
+  Box,
+  Grid
 } from '@material-ui/core';
+import Tabla from './VistasInicio/Tabla'
+import Tarjeta from './VistasInicio/TarjetasPrecios'
+import Grafico from './VistasInicio/Grafico';
+
+function a11yProps(index) {
+  return {
+    id: `simple-tab-${index}`,
+    'aria-controls': `simple-tabpanel-${index}`,
+  };
+}
+
+function TabPanel(props) {
+  const { children, value, index, ...other } = props;
+
+  return (
+    <div
+      role="tabpanel"
+      hidden={value !== index}
+      id={`simple-tabpanel-${index}`}
+      aria-labelledby={`simple-tab-${index}`}
+      {...other}
+    >
+      {value === index && (
+        <Box p={3}>
+          <Typography>{children}</Typography>
+        </Box>
+      )}
+    </div>
+  );
+}
+
+TabPanel.propTypes = {
+  children: PropTypes.node,
+  index: PropTypes.any.isRequired,
+  value: PropTypes.any.isRequired,
+};
+
 
 const useStyle = makeStyles((theme) => ({
   root: {
-
     main:"#ff3d00"
   },
   paper: {
@@ -20,219 +61,85 @@ const useStyle = makeStyles((theme) => ({
     width: '90%',
     margin: "20px auto",
   },
-
-
-  Button: {
-    position: "relative",
-    margin: theme.spacing(3)
+  avatar:{
+    display: 'flex',
+    //backgroundColor:'#3055a7',
+    margin: theme.spacing(4),
+  },
+  button: {
+    margin: theme.spacing(1)
+  },
+  title:{
 
   },
-  Contenido: {
-    flexGrow: 1,
-
-  },
-  paperData: {
-    
-    padding: theme.spacing(1),
-    textAlign: 'center',
-    color: theme.palette.text.secondary,
-    margin: theme.spacing(3),
-
-  },
-  table: {
-    margin: theme.spacing(5),
-    minWidth: 600,
-
-
-  },
-  list:{
-
-    width: '100%',
-    maxWidth: 360,
-    backgroundColor: theme.palette.background.paper,
-  }
-
-
-}));/*
-const theme = createMuiTheme({
-  palette: {
-    primary: {
-      main: '#3f51b5'
-    },
-    
-  },
-});*/
-
+}));
 
 const Usuario = () => {
   const classes = useStyle()
-  const [value, setValue] = React.useState(2);
+  const [value, setValue] = React.useState(0);
+  const [periodoUsuario, setPeriodo] =useState();
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
-  function createData(name, calories, fat, carbs, protein) {
-    return { name, calories, fat, carbs, protein };
+
+  const rows =[{
+    idprediccion:1,
+    idperiodo_id:12,
+    fechainicio:"2021/07/12",
+    fechafin:"2021/09/1",
+    idzona_id:"ZORI",
+    idgasolina_id:"RE02",
+    precio:2.3,
+    variacion:0.1
+  }]
+  
+  const tarjeta={
+    idzona: "ZCEN",
+    nombrezona: "Central",
+    idperiodo: 37,
+    inicio: "2021/05/18",
+    fin: "2021/05/31",
+    especial: 3.7,
+    regular: 3.51,
+    diesel: 3.03,
+    variacion_e: 0.06,
+    variacion_r: 0.06,
+    variacion_d: 0.11
   }
 
-  const rows = [
-    createData('Frozen yoghurt', 159, 6.0, 24, 4.0),
-    createData('Ice cream sandwich', 237, 9.0, 37, 4.3),
-    createData('Eclair', 262, 16.0, 24, 6.0),
-    createData('Cupcake', 305, 3.7, 67, 4.3),
-    createData('Gingerbread', 356, 16.0, 49, 3.9),
-  ];
-
-  
-
   return (
-    <Grid container="fixed" fullWidth>
-
-      <AppBar color="primary" position="static">
-        <Typography variant="h4" className={classes.title}  >
+    <div className={classes.root}>
+      <Grid container="fixed" fullWidth>
+        <AppBar color="primary" position="static">
           <Avatar className={classes.avatar} ></Avatar>
-          Historial de Usuarios
-        </Typography>
-      </AppBar>
-
-
-      <div className={classes.Button}>
-        <Button variant="contained" color="primary">Ingresar Precio </Button>
-        <Button variant="contained" color="primary">Salir </Button>
-      </div>
-
-
-
-      <Paper className={classes.paper} elevation={10} >
-
-        <Grid>
-          <Paper square>
-            <Tabs
-              value={value}
-              indicatorColor="primary"
-              textColor="primary"
-              onChange={handleChange}
-              aria-label="disabled tabs example" >
-              <Tab label="Modelo Calculado" />
-              <Tab label="Graficos" />
-            </Tabs>
-          </Paper>
-
-        </Grid>
-
-        <div className={classes.Contenido}>
-          <Grid container spacing={3}>
-            <Grid item xs>
-              <Paper className={classes.paperData}>
-
-                Zona Occidental
-                <List component="nav" className={classes.list} aria-label="mailbox folders">
-                  <ListItem button>
-                    <ListItemText primary="Diesel" />
-                  </ListItem>
-                  <Divider />
-                  <ListItem button divider>
-                    <ListItemText primary="Gasolina Regular" />
-                  </ListItem>
-                  <ListItem button>
-                    <ListItemText primary="Gasolina Especial" />
-                  </ListItem>
-                  <Divider light />
-    
-                </List>
-
-              </Paper>
-            </Grid>
-            <Grid item xs>
-              <Paper className={classes.paperData}>
-                Zona Central
-                <List component="nav" className={classes.list} aria-label="mailbox folders">
-                  <ListItem button>
-                    <ListItemText primary="Diesel" />
-                  </ListItem>
-                  <Divider />
-                  <ListItem button divider>
-                    <ListItemText primary="Gasolina Regular" />
-                  </ListItem>
-                  <ListItem button>
-                    <ListItemText primary="Gasolina Especial" />
-                  </ListItem>
-                  <Divider light />
-    
-                </List>
-
-                </Paper>
-            </Grid>
-            <Grid item xs>
-              <Paper className={classes.paperData}>
-                Zona Oriental
-                <List component="nav" className={classes.list} aria-label="mailbox folders">
-                  <ListItem button>
-                    <ListItemText primary="Diesel" />
-                  </ListItem>
-                  <Divider />
-                  <ListItem button divider>
-                    <ListItemText primary="Gasolina Regular" />
-                  </ListItem>
-                  <ListItem button>
-                    <ListItemText primary="Gasolina Especial" />
-                  </ListItem>
-                  <Divider light />
-    
-                </List>
-
-                </Paper>
-            </Grid>
-          </Grid>
-          <Grid container spacing={3}>
-
-          </Grid>
-        </div>
-
-
-        <div className={classes.Contenido}>
-          <h4>Historial de Ajuste</h4>
-          <TableContainer component={Paper}>
-            <Table className={classes.table} size="small" aria-label="a dense table">
-              <TableHead>
-                <TableRow>
-                  <TableCell>Dessert (100g serving)</TableCell>
-                  <TableCell align="right">Calories</TableCell>
-                  <TableCell align="right">Fat&nbsp;(g)</TableCell>
-                  <TableCell align="right">Carbs&nbsp;(g)</TableCell>
-                  <TableCell align="right">Protein&nbsp;(g)</TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {rows.map((row) => (
-                  <TableRow key={row.name}>
-                    <TableCell component="th" scope="row">
-                      {row.name}
-                    </TableCell>
-                    <TableCell align="right">{row.calories}</TableCell>
-                    <TableCell align="right">{row.fat}</TableCell>
-                    <TableCell align="right">{row.carbs}</TableCell>
-                    <TableCell align="right">{row.protein}</TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </TableContainer>
-
-        </div>
-
-
-        <div className={classes.Button}>
-          <Button variant="contained" color='primary'>Crear Modelos</Button>
-          <Button variant="contained" color="primary">Eliminar Entradas</Button>
-        </div>
-
-
-
-      </Paper>
-
-    </Grid>
-
-
+          <Typography className={classes.title} variant="h5">Bienvenido a su historial
+          <Button color="secundary">Ingresar Precio</Button>
+          <Button color="secundary">Salir</Button>
+          </Typography>
+        </AppBar>
+        <Paper className={classes.paper} elevation={10} >
+          <Tabs value={value} onChange={handleChange} aria-label="simple tabs example" align="center">
+            <Tab label="Historial de precios" {...a11yProps(0)} />
+            <Tab label="Graficos" {...a11yProps(1)} />
+          </Tabs>
+          <TabPanel value={value} index={0}>
+            <Typography variant="h5">Historial de Ajuste
+            <Button className={classes.button} color="primary">Crear Modelo</Button>
+            <Button className={classes.button} color="primary">Eliminar</Button>
+            </Typography>
+            <Tarjeta zona={tarjeta}/>
+            <Tarjeta zona={tarjeta}/>
+            <Tarjeta zona={tarjeta}/>
+            <br/>
+            <br/>
+            <Tabla prediccion={rows}/>
+          </TabPanel>
+          <TabPanel value={value} index={1}>
+            <Grafico/>
+          </TabPanel>
+        </Paper>
+      </Grid>
+    </div>
   );
 }
 export default Usuario;
