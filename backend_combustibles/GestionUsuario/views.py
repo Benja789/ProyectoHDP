@@ -8,11 +8,13 @@ from GestionUsuario.models import Usuario
 # Create your views here.
 @csrf_exempt
 def iniciarSesion (request):
+    #Metodo que valida que el usuario pueda logearse
     comprobarValidarse = {
         "idUsuario":"",
         "validarse": False,
         "correo": False,
-        "password": False
+        "password": False,
+        "primera":1
     }
     if request.method =='POST':
         if request.POST['usuario'] != 'undefined' and request.POST['password']!= 'undefined':

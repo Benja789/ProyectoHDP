@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 import PropTypes from 'prop-types';
-
+import {Link} from "react-router-dom";
 import {
   makeStyles, 
   AppBar, 
@@ -114,7 +114,9 @@ const Usuario = () => {
           <Avatar className={classes.avatar} ></Avatar>
           <Typography className={classes.title} variant="h5">Bienvenido a su historial
           <Button color="secundary">Ingresar Precio</Button>
-          <Button color="secundary">Salir</Button>
+          <Link to="/">
+            <Button color="secundary">Salir</Button>
+          </Link>
           </Typography>
         </AppBar>
         <Paper className={classes.paper} elevation={10} >

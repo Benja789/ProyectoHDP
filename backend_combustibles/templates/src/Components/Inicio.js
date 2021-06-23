@@ -10,6 +10,7 @@ import {
     Box,
     Toolbar,
     Button, 
+    Card,
     Menu, 
     MenuItem,
     Paper
@@ -234,8 +235,9 @@ const Inicio = (props) => {
           {nuevoPeriodo!== undefined && <Tabla prediccion={nuevoPeriodo}/>}
         </TabPanel>
         <TabPanel value={value} index={2}>
-          Graficos
-          <Grafico/>
+          <Card>
+            <Grafico/>
+          </Card>
         </TabPanel>
       </Paper>
     </div>
