@@ -13,13 +13,14 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
+import json
 from django.contrib import admin
 from django.urls import path
 from django.views.generic import TemplateView
 from backend_combustibles.views import vista_cargador, vista_inicio
 from Prediccion.views import sendData_Historial, grafica_central, grafica_occidental, grafica_oriental
 from GestionarTablasSecundarias.views import sendData_periodo, sendData_zonas
-from GestionUsuario.views import iniciarSesion, vista_login,vista_usuario, vista_registrarse
+from GestionUsuario.views import iniciarSesion, vista_login,vista_usuario, vista_registrarse, registrarse
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -30,6 +31,7 @@ urlpatterns = [
     path('registrarse/', vista_registrarse),  #Vista para registrarse
     path('jsonhistorial', sendData_Historial), #Historial de los precios aplicados de la pagina inicio
     path('jsonpreciosvigentes', sendData_zonas), #Datos de la pagina del inicio
+    path('jsonregistrarse',registrarse ), #URL para registrarse 
     path('jsonperiodo', sendData_periodo), #Devuelve todos los periodos vigentes
     path('jsoniniciarsesion', iniciarSesion), #Metodo encargado para validar la sesion
     path('jsongraficacentral',grafica_central), #Manda los datos de la grafica central

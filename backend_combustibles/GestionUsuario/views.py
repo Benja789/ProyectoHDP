@@ -5,10 +5,7 @@ from django.db.models.query_utils import Q
 from django.http import JsonResponse, request
 from django.views.decorators.csrf import csrf_exempt
 from GestionUsuario.models import Usuario
-
-sesion={
-    'dui':''
-}
+import bcrypt
 
 # Create your views here.
 @csrf_exempt
@@ -53,8 +50,43 @@ def iniciarSesion (request):
     return JsonResponse(comprobarValidarse)
 
 @csrf_exempt
-def jsonregistrarse(request):
-    pass
+def registrarse(request):
+    usarios = list(Usuario.objects.filter(Q(dui=request.POST['dui']) | Q(correo=request.POST['email'])).values('dui'))
+
+    if len(usarios)==0:
+        #del (usarios)
+        dui = request.POST['dui']
+        nombre =request.POST['nombre']
+        apellido=request.POST['apellido']
+        departamento=request.POST['departamento']
+        municipio= request.POST['municipio']
+        email=request.POST['email']
+        password =request.POST['password']
+        fecha=request.POST['fecha']
+
+        pEncryptada = bcrypt.hashpw(str(password).encode('utf-8'), bcrypt.gensalt())
+        #print(pEncryptada)
+        nuevoUsuario = Usuario.objects.create(
+            dui =dui,
+            nombres=nombre,
+            apellidos=apellido,
+            departamento=departamento,
+            municipio=municipio,
+            correo =email,
+            password = pEncryptada,
+            fecha_nacimiento= fecha
+        )
+        try:
+            nuevoUsuario.save()
+            del nuevoUsuario;
+        except:
+            return JsonResponse({"Creado":False})
+
+        return JsonResponse({"Creado":True})
+    return JsonResponse({"Creado":False})
+    
+
+    
 
 def vista_registrarse(request):
     return render(request, 'index.html')

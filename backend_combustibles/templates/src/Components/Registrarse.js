@@ -15,14 +15,15 @@ import {
     Typography,
     FormHelperText
 }from '@material-ui/core';
-import PropTypes from 'prop-types';
-import MaskedInput from 'react-text-mask';
-import NumberFormat from 'react-number-format';
 import{
     Visibility,
     VisibilityOff
-}from '@material-ui/icons'
-import { Link } from 'react-router-dom';
+}from '@material-ui/icons';
+import axios  from 'axios';
+import { 
+    Link,
+    Redirect
+ } from 'react-router-dom';
 
 const useStyle= makeStyles((theme) =>({
     root: {
@@ -100,7 +101,9 @@ const Registrarse = (props) => {
         weightRange: '',
         showPassword: false,
     });
-
+    const [validarR, setValidarR] =useState({
+        Creado: false
+    });
     //Contraseña - Visible
     const handleChange = (prop) => (event) => {
         setValues({ ...values, [prop]: event.target.value });
@@ -127,12 +130,40 @@ const Registrarse = (props) => {
         event.preventDefault();
     };
     const registrarse =(data)=>{
-        console.log("funciona")
-        console.log(data)
+
+        if (data.password ==data.passwordConfir){
+            //console.log("funciona")
+            let formData = new FormData();
+            formData.append("dui", data.dui);
+            formData.append("nombre", data.nombre);
+            formData.append("apellido", data.apellido);
+            formData.append("departamento", data.departamento);
+            formData.append("municipio", data.municipio);
+            formData.append("email", data.email);
+            formData.append("password", data.password);
+            formData.append("fecha", data.fecha);
+            solicitarCuenta(formData);
+        }
+        else{
+            window.alert("Contraseñas no coinciden")
+        }
+    }
+    
+    const solicitarCuenta =async(data)=>{
+        axios.post(props.url+"/jsonregistrarse", data).then(res=>{
+            setValidarR(res.data)
+            console.log(validarR.Creado)
+            if(validarR.Creado ==false){
+                window.alert("Usuario ya existe")
+            }
+        }).catch(err=>{
+            window.alert("Verifique los campos, si el error persiste intentelo mas tarde")
+        })
     }
 
     return ( 
         <div className={classes.root} >
+            {validarR.Creado == true && <Redirect to='/login'  />}
             <form onSubmit={handleSubmit(registrarse)} >
                 <Card className={classes.card}>
                     <CardContent>
@@ -189,7 +220,7 @@ const Registrarse = (props) => {
                                         },
                                         minLength:{
                                             value:9,
-                                            message:"Longuitud minimia de 9"
+                                            message:"Longuitud minima de 9"
                                         },
                                         maxLength:{
                                             value:9,
@@ -296,7 +327,7 @@ const Registrarse = (props) => {
                                     name="fecha"
                                     label="Fecha de nacimiento"
                                     type="date"
-                                    defaultValue="0-0-0"
+                                    defaultValue="2021-06-12"
                                     className={classes.textField}
                                     InputLabelProps={{shrink: true,}}
                                     {...register("fecha",{
