@@ -10,37 +10,47 @@ import {
     Button,
     Input,
     IconButton,
+    Grid,
     FormControl,
-    Typography
+    Typography,
+    FormHelperText
 }from '@material-ui/core';
+import PropTypes from 'prop-types';
+import MaskedInput from 'react-text-mask';
+import NumberFormat from 'react-number-format';
 import{
     Visibility,
     VisibilityOff
 }from '@material-ui/icons'
 import { Link } from 'react-router-dom';
 
-const useStyele= makeStyles((theme) =>({
+const useStyle= makeStyles((theme) =>({
     root: {
        margin:'auto',
-       marginTop:'20%',
+       marginTop:'75px',
        display: 'block',
     }, 
     card:{
         margin:'auto',
-        width: '510px',
-        height:'580px',
+        width: '550px',
     },
     text:{
         padding: '2px',
         margin: theme.spacing(1),
     },
+    div:{
+        display:'block',
+        position:'absolute',
+        minWidth:'200px'
+    },
     button:{
         display: 'flex',
         justifyContent: 'center',
         paddingInline:'2px',
-        margin: 'auto',
-        marginTop:'10px',
-        minWidth:'400px',
+        //margin: 'auto',
+        margin: theme.spacing(3),
+        marginTop:'20px',
+        minWidth:'500px',
         
     },
     typography:{
@@ -50,18 +60,30 @@ const useStyele= makeStyles((theme) =>({
     input:{
         display: 'flex',
         padding: '2px',
-        maxWidth:'450px',
+        width:'400px',
         marginTop:'20px',
         marginLeft:theme.spacing(1),
     },
     formControl:{
-        maxWidth:'450px', 
+        minWidth:'500px', 
         marginTop:'10px',
     },
+
+    textField: {
+        marginLeft: theme.spacing(1),
+        marginRight: theme.spacing(1),
+        width: 400,
+    },
+    error:{
+        display: 'inline',
+        margin: theme.spacing(1),
+        color:"#FA3227",
+    }
 }))
 
+
 const Registrarse = (props) => {
-    const classes = useStyele();
+    const classes = useStyle();
     const {register, formState:{errors}, handleSubmit} = useForm();
     const [values, setValues] = useState({
         amount: '',
@@ -70,115 +92,222 @@ const Registrarse = (props) => {
         weightRange: '',
         showPassword: false,
       });
-      const [valuesC, setValuesC] = useState({
+    
+    const [valuesC, setValuesC] = useState({
         amount: '',
         password: '',
         weight: '',
         weightRange: '',
         showPassword: false,
-      });
-    
-      //Contraseña - Visible
-      const handleChange = (prop) => (event) => {
-        setValues({ ...values, [prop]: event.target.value });
-      };
-    
-      const handleClickShowPassword = () => {
-        setValues({ ...values, showPassword: !values.showPassword });
-      };
-    
-      const handleMouseDownPassword = (event) => {
-        event.preventDefault();
-      };
+    });
 
-      //Confirmar-Visible
-      const handleChangeC = (prop) => (event) => {
-        setValuesC({ ...valuesC, [prop]: event.target.value });
-      };
-    
-      const handleClickShowPasswordC = () => {
-        setValuesC({ ...valuesC, showPassword: !valuesC.showPassword });
-      };
-    
-      const handleMouseDownPasswordC = (event) => {
+    //Contraseña - Visible
+    const handleChange = (prop) => (event) => {
+        setValues({ ...values, [prop]: event.target.value });
+    };
+
+    const handleClickShowPassword = () => {
+        setValues({ ...values, showPassword: !values.showPassword });
+    };
+
+    const handleMouseDownPassword = (event) => {
         event.preventDefault();
-      };
+    };
+
+    //Confirmar-Visible
+    const handleChangeC = (prop) => (event) => {
+        setValuesC({ ...valuesC, [prop]: event.target.value });
+    };
+
+    const handleClickShowPasswordC = () => {
+        setValuesC({ ...valuesC, showPassword: !valuesC.showPassword });
+    };
+
+    const handleMouseDownPasswordC = (event) => {
+        event.preventDefault();
+    };
+    const registrarse =(data)=>{
+        console.log("funciona")
+        console.log(data)
+    }
+
     return ( 
         <div className={classes.root} >
-            <form >
+            <form onSubmit={handleSubmit(registrarse)} >
                 <Card className={classes.card}>
                     <CardContent>
                         <Typography className={classes.typography}variant="h6">Complete los siguientes campos</Typography>
-                        <br/>
-                        <TextField 
-                            className={classes.text}
-                            label="Nombre"/>
-                        <TextField 
-                            className={classes.text}
-                            label="Apellido"
-                            />
-                        <br/>
-                        <TextField 
-                            className={classes.text}
-                            label="Correo Electronico"/>
-                        <TextField 
-                            className={classes.text}
-                            label="DUI"/>
-                        <br/>
-                    <FormControl className={classes.formControl} >
-                        <InputLabel style={{marginLeft: '8px'}} >Contraseña</InputLabel>
-                        <Input 
-                        className={classes.input}
-                        name="password"
-                        id="standard-adornment-password"
-                        type={values.showPassword ? 'text' : 'password'}
-                        onChange={handleChange('password')}
-                        endAdornment={
-                            <InputAdornment position="end">
-                              <IconButton
-                                aria-label="toggle password visibility"
-                                onClick={handleClickShowPassword}
-                                onMouseDown={handleMouseDownPassword}>
-                                {values.showPassword ? <Visibility /> : <VisibilityOff />}
-                              </IconButton>
-                            </InputAdornment>}
-                        {...register("password",{
-                            required:{
-                                value:true,
-                                message:"Campo obligatorio, no se puede dejar vacio"
-                            }
-                        })}/>
-                    </FormControl>
-                    <FormControl className={classes.formControl} >
-                        <InputLabel style={{marginLeft: '8px'}} >Confirmar contraseña</InputLabel>
-                        <Input 
-                            className={classes.input}
-                            name="passwordConfir"
-                            id="standard-passwordConf"
-                            type={valuesC.showPassword ? 'text' : 'password'}
-                            onChange={handleChangeC('password')}
-                            endAdornment={
-                                <InputAdornment position="end">
-                                <IconButton
-                                    aria-label="toggle password visibility"
-                                    onClick={handleClickShowPasswordC}
-                                    onMouseDown={handleMouseDownPasswordC}>
-                                    {valuesC.showPassword ? <Visibility /> : <VisibilityOff />}
-                                </IconButton>
-                                </InputAdornment>}
-                            {...register("passwordConfir",{
-                                required:{
-                                    value:true,
-                                    message:"Campo obligatorio, no se puede dejar vacio"
-                                }})}
-                        />
-                    </FormControl>
-                        <TextField 
-                            className={classes.text}
-                            label="Departamento"/>
-                        <TextField 
-                            className={classes.text}
-                            label="Municipio"/>
+                        <Grid container>
+                            <Grid item xs={12} sm={6}>
+                                <TextField 
+                                    className={classes.text}
+                                    label="Nombre"
+                                    name="nombre"
+                                    {...register("nombre",{
+                                        required:{
+                                            value:true,
+                                            message:"Campo obligatorio, ingrese un nombre"
+                                        }})}/>
+                                <FormHelperText className={classes.error}>{errors?.nombre?.message}</FormHelperText>
+                            </Grid>
+                            <Grid item xs={12} sm={6}>
+                                
+                                <TextField 
+                                    className={classes.text}
+                                    label="Apellido"
+                                    name="apellido"
+                                    {...register("apellido",{
+                                        required:{
+                                            value:true,
+                                            message:"Campo obligatorio, ingrese un apellido"
+                                        }})}/>
+                                <FormHelperText className={classes.error}>{errors?.apellido?.message}</FormHelperText>
+                            </Grid>
+                            <Grid item xs={12} sm={6}>
+                                <TextField 
+                                    className={classes.text}
+                                    label="Correo Electronico"
+                                    type="email"
+                                    name="email"
+                                    {...register("email",{
+                                        required:{
+                                            value:true,
+                                            message:"Campo obligatorio, ingrese un correo"
+                                        }})}/>
+                                <FormHelperText className={classes.error}>{errors?.email?.message}</FormHelperText>
+                            </Grid>
+                            <Grid item xs={12} sm={6}>
+                                <TextField
+                                    label="DUI"
+                                    type="number"
+                                    className={classes.text}
+                                    name="dui"
+                                    {...register("dui",{
+                                        required:{
+                                            value:true,
+                                            message:"Campo obligatorio, solo se permiten numeros"
+                                        },
+                                        minLength:{
+                                            value:9,
+                                            message:"Longuitud minimia de 9"
+                                        },
+                                        maxLength:{
+                                            value:9,
+                                            message:"Longuitud maxima de 9"
+                                        }})}/>
+                                <FormHelperText className={classes.error}>{errors?.dui?.message}</FormHelperText> 
+                            </Grid>
+                            <Grid item xs={12}>
+                                <FormControl className={classes.formControl} >
+                                    <InputLabel style={{marginLeft: '8px'}} >Contraseña</InputLabel>
+                                    <Input 
+                                    className={classes.input}
+                                    name="password"
+                                    id="standard-adornment-password"
+                                    type={values.showPassword ? 'text' : 'password'}
+                                    onChange={handleChange('password')}
+                                    endAdornment={
+                                        <InputAdornment position="end">
+                                        <IconButton
+                                            aria-label="toggle password visibility"
+                                            onClick={handleClickShowPassword}
+                                            onMouseDown={handleMouseDownPassword}>
+                                            {values.showPassword ? <Visibility /> : <VisibilityOff />}
+                                        </IconButton>
+                                        </InputAdornment>}
+                                    {...register("password",{
+                                        required:{
+                                            value:true,
+                                            message:"Campo obligatorio, no se puede dejar vacia la contraseña"
+                                        },
+                                        minLength:{
+                                            value:8,
+                                            message:"Longuitud minimia de 8"
+                                        },
+                                        maxLength:{
+                                            value:20,
+                                            message:"Longuitud maxima de 20"
+                                        }})}/>
+                                    <FormHelperText className={classes.error}>{errors?.password?.message}</FormHelperText> 
+                                </FormControl>
+                            </Grid>
+                            <Grid item xs={12}>        
+                                <FormControl className={classes.formControl} >
+                                    <InputLabel style={{marginLeft: '8px'}} >Confirmar contraseña</InputLabel>
+                                    <Input 
+                                        className={classes.input}
+                                        name="passwordConfir"
+                                        id="standard-passwordConf"
+                                        type={valuesC.showPassword ? 'text' : 'password'}
+                                        onChange={handleChangeC('password')}
+                                        endAdornment={
+                                            <InputAdornment position="end">
+                                            <IconButton
+                                                aria-label="toggle password visibility"
+                                                onClick={handleClickShowPasswordC}
+                                                onMouseDown={handleMouseDownPasswordC}>
+                                                {valuesC.showPassword ? <Visibility /> : <VisibilityOff />}
+                                            </IconButton>
+                                            </InputAdornment>}
+                                        {...register("passwordConfir",{
+                                            required:{
+                                                value:true,
+                                                message:"Campo obligatorio, no se puede dejar vacia la confirmacion de contraseña"
+                                            },
+                                            minLength:{
+                                                value:8,
+                                                message:"Longuitud minimia de 8"
+                                            },
+                                            maxLength:{
+                                                value:20,
+                                                message:"Longuitud maxima de 20"
+                                            }})}/>
+                                    <FormHelperText className={classes.error}>{errors?.passwordConfir?.message}</FormHelperText> 
+                                </FormControl>
+                            </Grid>
+                            <Grid item xs={12} sm={6}>
+                                <TextField 
+                                    className={classes.text}
+                                    label="Departamento"
+                                    name="departamento"
+                                    {...register("departamento", {
+                                        required:{
+                                            value:true,
+                                            message:"Campo obligatorio, ingrese el departamento"
+                                        }})}/>
+                                <FormHelperText className={classes.error}>{errors?.departamento?.message}</FormHelperText> 
+                            </Grid>
+                            <Grid item xs={12} sm={6}>
+                                <TextField 
+                                    className={classes.text}
+                                    label="Municipio"
+                                    name="municipio"
+                                    {...register("municipio", {
+                                        required:{
+                                            value:true,
+                                            message:"Campo obligatorio, ingrese el municipio"
+                                        }})}/>
+                                <FormHelperText className={classes.error}>{errors?.municipio?.message}</FormHelperText> 
+                            </Grid>
+                            <Grid item xs={12}>
+                                <br/>
+                                <TextField
+                                    id="date"
+                                    name="fecha"
+                                    label="Fecha de nacimiento"
+                                    type="date"
+                                    defaultValue="0-0-0"
+                                    className={classes.textField}
+                                    InputLabelProps={{shrink: true,}}
+                                    {...register("fecha",{
+                                        required:{
+                                            value:true,
+                                            error:"Fecha obligatoria"
+                                        }
+                                    })}/>
+                                    <FormHelperText className={classes.error}>{errors?.fecha?.message}</FormHelperText> 
+                                </Grid>
+                        </Grid>
                     </CardContent>
                     <Button 
                     className={classes.button}

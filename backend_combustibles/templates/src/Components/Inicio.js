@@ -10,10 +10,10 @@ import {
     Box,
     Toolbar,
     Button, 
-    Card,
     Menu, 
+    CardContent,
     MenuItem,
-    Paper
+    Card
  } from '@material-ui/core';
 import {
   Link
@@ -108,6 +108,28 @@ const Inicio = (props) => {
     "Noviembre",
     "Diciembre",
   ];
+  const [central, setCentral]=useState([]);
+  const[occidental, setOccidental]=useState([]);
+  const[oriental, setOriental]=useState([]);
+
+  //Obtiene los datos de la zona central
+  const datosGrafica =async()=>{
+    axios.get(props.url+"/jsongraficacentral").then((res)=>{
+      setCentral(res.data)
+    }).catch(err=>{
+      window.alert("No se han podido traer los datos para la grafica de central");
+    });
+    axios.get(props.url+"/jsongraficaoccidental").then((res)=>{
+      setOccidental(res.data)
+    }).catch(err=>{
+      window.alert("No se han podido traer los datos para la grafica de occidental");
+    })
+    axios.get(props.url+"/jsongraficaoriental").then((res)=>{
+      setOriental(res.data)
+    }).catch(err=>{
+      window.alert("No se han podido traer los datos para la grafica de oriental");
+    })
+  }
 
   //Hace una peticion de los periodos e el historial de la tabla 
   const getTablaInicial = async() =>{
@@ -127,6 +149,7 @@ const Inicio = (props) => {
   const getDatosVigentes = async()=>{
     axios.get(props.url+"/jsonpreciosvigentes").then((res)=>{
       setZonas(res.data);
+
     }).catch(err=>{
       window.alert("Los datos de los precios vigentes no se han podido traer")
     })
@@ -154,7 +177,6 @@ const Inicio = (props) => {
       setNuevoPeriodo(res.data);
       
     }).catch(err =>{
-      console.log(nuevoPeriodo)
       window.alert("Algo salio mal, no se ha podido traer el periodo seleccionado")
     })
   }
@@ -166,7 +188,6 @@ const Inicio = (props) => {
     formData.append("fechainicio", periodo[index].fechainicio);
     formData.append("fechafin", periodo[index].fechafin);
     seleccionarPeriodo(formData);
-    console.log(nuevoPeriodo)
   }
 
   //Metodo que se encarga de resetear la tabla
@@ -196,19 +217,24 @@ const Inicio = (props) => {
         <Tabs value={value} onChange={handleChange} aria-label="simple tabs example" align="center">
           <Tab label="Precios por zona"  {...a11yProps(0)} />
           <Tab label="Historial de precios" onClick={getTablaInicial}  {...a11yProps(1)} />
-          <Tab label="Graficos" {...a11yProps(2)} />
+          <Tab label="Graficos" onClick={datosGrafica} {...a11yProps(2)} />
         </Tabs>
       </AppBar>
-      <Paper className={classes.paper} elevation={10}>
         <TabPanel value={value} index={0}>
+        <Card>
+        <CardContent>
           <img className={classes.media} src={MapaSalvador} alt="Mapa de El Salvador"/>
           <br/>
           <br/>
-          {zonas[0] !== undefined && <Tarjeta zona={zonas[0]}/>}
           {zonas[1] !== undefined && <Tarjeta zona={zonas[1]}/>}
+          {zonas[0] !== undefined && <Tarjeta zona={zonas[0]}/>}
           {zonas[2] !== undefined && <Tarjeta zona={zonas[2]}/>}
+        </CardContent>
+        </Card>
         </TabPanel>
         <TabPanel value={value} index={1}>
+        <Card>
+        <CardContent>
           <Typography variant="h5">Tabla del historial de los precios</Typography>
           <Button  aria-controls="simple-menu" aria-haspopup="true" onClick={handleClick}>Selecciona Periodo</Button>
           <Button  aria-controls="simple-menu" aria-haspopup="true" onClick={resetear}>Mostrar tabla inicial</Button>
@@ -233,13 +259,21 @@ const Inicio = (props) => {
           </Menu>
           {nuevoPeriodo === undefined && <Tabla prediccion={prediccion}/>}
           {nuevoPeriodo!== undefined && <Tabla prediccion={nuevoPeriodo}/>}
+        </CardContent>
+        </Card>
         </TabPanel>
         <TabPanel value={value} index={2}>
-          <Card>
-            <Grafico/>
-          </Card>
+        <Card>
+        <CardContent>
+          <Grafico zona={occidental} nombre={"Occidental"}/>
+          <br/>
+          <Grafico zona={central} nombre={"Central"}/>
+          <br/>
+          <Grafico zona={oriental} nombre={"Oriental"}/>
+
+        </CardContent>
+        </Card> 
         </TabPanel>
-      </Paper>
     </div>
   );
 }

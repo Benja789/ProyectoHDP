@@ -13,6 +13,7 @@ import {
   Box,
   Grid
 } from '@material-ui/core';
+import axios from 'axios';
 import Tabla from './VistasInicio/Tabla'
 import Tarjeta from './VistasInicio/TarjetasPrecios'
 import Grafico from './VistasInicio/Grafico';
@@ -74,9 +75,16 @@ const useStyle = makeStyles((theme) => ({
   },
 }));
 
-const Usuario = () => {
+const Usuario = (props) => {
   const classes = useStyle()
-  const [value, setValue] = React.useState(0);
+  const [value, setValue] = useState(0);
+  const [usuario, setUsuario] =useState({
+      idUsuario:"",
+      validarse: false,
+      correo: true,
+      password: true,
+      primera:0
+  });
   const [periodoUsuario, setPeriodo] =useState();
   const handleChange = (event, newValue) => {
     setValue(newValue);
@@ -106,6 +114,20 @@ const Usuario = () => {
     variacion_r: 0.06,
     variacion_d: 0.11
   }
+  const consultarInicio = async()=>{
+    axios.get(props.url+"/jsoniniciarsesion").then((res)=>{
+        setUsuario(res.data);
+        console.log(usuario)
+      }).catch(err=>{
+        window.alert("Los traer")
+      })
+  }
+
+  const cerrarSesion = async() =>{
+    axios.post(props.url+"/jsoncerrarsesion").then((res)=>{
+
+    })
+  }
 
   return (
     <div className={classes.root}>
@@ -115,7 +137,7 @@ const Usuario = () => {
           <Typography className={classes.title} variant="h5">Bienvenido a su historial
           <Button color="secundary">Ingresar Precio</Button>
           <Link to="/">
-            <Button color="secundary">Salir</Button>
+            <Button color="secundary" onClick={cerrarSesion}>Salir</Button>
           </Link>
           </Typography>
         </AppBar>

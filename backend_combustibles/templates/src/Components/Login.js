@@ -6,8 +6,6 @@ import{
     Button,
     Card, 
     Typography,
-    FormControlLabel, 
-    Checkbox,
     IconButton,
     FormHelperText,
     Input,
@@ -32,7 +30,7 @@ const useStyle = makeStyles((theme)=>({
      width: '350px',
      display: 'block',
      margin:'auto',
-     marginTop:'25%',
+     marginTop:'200px',
      //position: 'center',
  },
  avatar:{
@@ -99,9 +97,11 @@ const Login = (props) =>{
       const handleMouseDownPassword = (event) => {
         event.preventDefault();
       };
+
+      
       useEffect(() => {
         document.title="Iniciar sesion";  
-      });
+      },[]);
 
   
     //Recoge la informacion del inicio de sesion
@@ -117,17 +117,17 @@ const Login = (props) =>{
             formData.append("usuario", data.usuario);
             formData.append("password", data.password);
             mandarUsuario(formData)
-        
         }
     }
 
     //Manda la informacion del usuario al servidor
     const mandarUsuario = async(data)=>{
         axios.post(props.url+"/jsoniniciarsesion", data).then(res=>{
-            console.log(res.data)
             setInicio(res.data);
+            console.log(res.data);
         }).catch(err=>{
-            window.alert("Algo ha salido mal, intentelo más tarde");           
+            window.alert("Algo ha salido mal, intentelo más tarde");   
+            console.log(err)        
         })
     }
 
@@ -182,9 +182,6 @@ const Login = (props) =>{
                     </FormControl>
                         <FormHelperText className={classes.error}>{errors?.password?.message}</FormHelperText>
                         {(inicioSesion.correo===true && inicioSesion.password === false ) && <FormHelperText className={classes.error}>Contraseña erronea</FormHelperText>}
-                    <FormControlLabel
-                        control={<Checkbox className={classes.fieldBox}name="checkedB" color="primary"/>}
-                        label="Recordar Contraseña"/>
                     <div style={{margin:'15px'}}>
                         <Typography variant="p">¿No tienes cuenta? </Typography>
                         <Link to="/registrarse">Crear una cuenta</Link>

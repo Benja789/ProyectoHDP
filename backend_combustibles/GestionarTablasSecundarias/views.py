@@ -62,18 +62,6 @@ def sendData_periodo (request):
     #Metodo que envia diccionario del periodo
     periodo =list(Periodo.objects.values().order_by('-idperiodo'))
     periodoEnviado = []
-    meses =[
-        "enero",
-        "febrero",
-        "marzo",
-        "abril",
-        "mayo",
-        "junio",
-        "julio",
-        "agosto",
-        "septiembre",
-        "octubre",
-        "noviembre","diciembre"]
     
     for i in range(len(periodo)):
         diccionario ={
