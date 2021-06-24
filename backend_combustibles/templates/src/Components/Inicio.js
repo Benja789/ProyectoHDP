@@ -149,7 +149,6 @@ const Inicio = (props) => {
   const getDatosVigentes = async()=>{
     axios.get(props.url+"/jsonpreciosvigentes").then((res)=>{
       setZonas(res.data);
-
     }).catch(err=>{
       window.alert("Los datos de los precios vigentes no se han podido traer")
     })
@@ -159,6 +158,7 @@ const Inicio = (props) => {
   useEffect(() => {
     document.title="Inicio";  
     getDatosVigentes();
+    // eslint-disable-next-line
   },[]);
 
   //Ayuda a dar tamaño a la appbar

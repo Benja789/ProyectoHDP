@@ -69,10 +69,8 @@ def cerrarSesion (request):
 @csrf_exempt 
 def consultarSesion (request):
     id =request.POST['dui']
-    periodoUsuario = list(Prediccion.objects.filter(dui=id).values())
-    if len(periodoUsuario)>0:
-        return JsonResponse(periodoUsuario, safe=False)
-    return JsonResponse({"id":request.POST['dui']})
+    informacionUsario =list(Usuario.objects.filter(dui=id).values('dui', 'nombres','apellidos'))
+    return JsonResponse(informacionUsario, safe=False)
 
 
 @csrf_exempt
@@ -111,9 +109,105 @@ def registrarse(request):
 
         return JsonResponse({"Creado":True})
     return JsonResponse({"Creado":False})
-    
 
-    
+
+@csrf_exempt
+def ultimosCalculos (request):
+    id =request.POST['dui']
+    periodoUsuario = list(Prediccion.objects.filter(dui=id).values())
+    if len(periodoUsuario)>0:
+        del periodoUsuario
+        zonas = list(Zona.objects.values())
+        prediccion = list(Prediccion.objects.values(
+            'idperiodo_id',
+            'idzona_id',
+            'idgasolina_id',
+            'precio',
+            'variacion').filter(dui=id).order_by('-idprediccion')[:9])
+        periodo = list(Periodo.objects.values('fechainicio','fechafin').order_by('-idperiodo')[:1])
+        datosEnviados=[]
+
+        #Arreglo del diccionario para mandaro como respuesta a una peticion de Ajax
+        for i in range(3):
+            diccionario = {
+                "idzona":"",
+                "nombrezona":"",
+                "idperiodo": "",
+                "inicio":"",
+                "fin":"",
+                "especial":"",
+                "regular":"",
+                "diesel":"",
+                "variacion_e":"",
+                "variacion_r":"",
+                "variacion_d":"",
+                "descripcion":True}
+
+            diccionario["idzona"]=zonas[i]["idzona"]
+            diccionario["nombrezona"]=zonas[i]["nombrezona"]
+            diccionario["idperiodo"]= prediccion[i]["idperiodo_id"]
+            diccionario["inicio"]= periodo[0]["fechainicio"].strftime("%Y/%m/%d")
+            diccionario["fin"]= periodo[0]["fechafin"].strftime("%Y/%m/%d")
+
+            for j in range(len(prediccion)):
+                if prediccion[j]["idzona_id"]==diccionario["idzona"]:
+                    if prediccion[j]["idgasolina_id"]=="ES01":
+                        diccionario["especial"]= prediccion[j]["precio"]
+                        diccionario["variacion_e"]=prediccion[j]["variacion"]
+
+                    if prediccion[j]["idgasolina_id"]=="RE02":
+                        diccionario["regular"]= prediccion[j]["precio"]
+                        diccionario["variacion_r"]=prediccion[j]["variacion"]
+
+                    if prediccion[j]["idgasolina_id"] =="DI03":
+                        diccionario["diesel"]= prediccion[j]["precio"]
+                        diccionario["variacion_d"]=prediccion[j]["variacion"]
+
+            datosEnviados.append(diccionario)
+            del(diccionario)
+        return JsonResponse (datosEnviados, safe = False)
+    return JsonResponse({"descripcion": False})
+
+@csrf_exempt
+def historialUsuario (request):
+    id =request.POST['dui']
+    historial = list(Prediccion.objects.filter(dui=id).values(
+            "idprediccion",
+            "idperiodo_id",
+            "idzona_id",
+            "idgasolina_id",
+            "precio",
+            "variacion"
+        ).order_by('-idprediccion')[:36])
+    periodo = list(Periodo.objects.values().order_by('-idperiodo')[:4])
+    datosEnviados =[]
+
+    for i in range(len(historial)):
+        diccionario ={
+            "idprediccion": "",
+            "idperiodo_id":"",
+            "fechainicio":"",
+            "fechafin":"",
+            "idzona_id": "",
+            "idgasolina_id": "",
+            "precio": "",
+            "variacion": ""
+        }
+        diccionario["idprediccion"] = historial[i]["idprediccion"]
+        diccionario["idperiodo_id"] = historial[i]["idperiodo_id"]
+        diccionario["idzona_id"] = historial[i]["idzona_id"]
+        diccionario["idgasolina_id"] = historial[i]["idgasolina_id"]
+        diccionario["precio"]= historial[i]["precio"]
+        diccionario["variacion"]=historial[i]["variacion"]
+        for j in range(len(periodo)):
+            if periodo[j]["idperiodo"] == diccionario["idperiodo_id"]:
+                diccionario["fechainicio"] =periodo[j]["fechainicio"].strftime("%Y/%m/%d")
+                diccionario["fechafin"] =periodo[j]["fechafin"].strftime("%Y/%m/%d")
+        datosEnviados.append(diccionario)
+        del(diccionario)
+    del(historial, periodo)
+    return JsonResponse(datosEnviados, safe=False)
+
 
 def vista_registrarse(request):
     return render(request, 'index.html')

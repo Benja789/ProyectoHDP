@@ -131,7 +131,7 @@ const Registrarse = (props) => {
     };
     const registrarse =(data)=>{
 
-        if (data.password ==data.passwordConfir){
+        if (data.password ===data.passwordConfir){
             //console.log("funciona")
             let formData = new FormData();
             formData.append("dui", data.dui);
@@ -153,7 +153,7 @@ const Registrarse = (props) => {
         axios.post(props.url+"/jsonregistrarse", data).then(res=>{
             setValidarR(res.data)
             console.log(validarR.Creado)
-            if(validarR.Creado ==false){
+            if(validarR.Creado ===false){
                 window.alert("Usuario ya existe")
             }
         }).catch(err=>{
@@ -163,7 +163,7 @@ const Registrarse = (props) => {
 
     return ( 
         <div className={classes.root} >
-            {validarR.Creado == true && <Redirect to='/login'  />}
+            {validarR.Creado === true && <Redirect to='/login'  />}
             <form onSubmit={handleSubmit(registrarse)} >
                 <Card className={classes.card}>
                     <CardContent>

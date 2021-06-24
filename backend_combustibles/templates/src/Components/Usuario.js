@@ -7,7 +7,8 @@ import {
   Typography, 
   Button, 
   Avatar, 
-  Paper, 
+  Card, 
+  CardContent,
   Tab, 
   Tabs, 
   Box,
@@ -56,82 +57,90 @@ const useStyle = makeStyles((theme) => ({
   root: {
     main:"#ff3d00"
   },
-  paper: {
+  card: {
     padding: 20,
-    height: '115vh',
     width: '90%',
     margin: "20px auto",
   },
   avatar:{
     display: 'flex',
+    top: 15,
     //backgroundColor:'#3055a7',
-    margin: theme.spacing(4),
+    margin: theme.spacing(2),
   },
-  button: {
-    margin: theme.spacing(1)
+  button:{
+    display:'inline-block',
+    width: '190px',
+    marginLeft:'75%',
+    //right: 100,
+  },
+  button1: {
+    display:'inline-block',
+    position: "absolute",
+    top: 30,
+    right: 100,
+    margin: '4px',
+    align: 'right',
+    background:'#E5ECFF',
+  },
+  button2: {
+    display:'inline-block',
+    position: "absolute",
+    top: 30,
+    right: 30,
+    margin: '4px',
+    align: 'right',
+    background:'#E5ECFF',
   },
   title:{
-
+    display: 'inline-block',
+    postion:'right',
+    margin: '-38px 0 0 65px',
   },
 }));
 
 const Usuario = (props) => {
   const classes = useStyle()
   const [value, setValue] = useState(0);
-  const [usuario, setUsuario] =useState({
-      idUsuario:"",
-      validarse: false,
-      correo: true,
-      password: true,
-      primera:0
-  });
-  const [periodoUsuario, setPeriodo] =useState();
+  const [usuario, setUsuario] =useState([]);
+  const [ultimosDatos, setUltimo] =useState([]);
+  const [historial, setHistorial]= useState([])
   const handleChange = (event, newValue) => {
     setValue(newValue);
-  };
+  };  
 
-  const rows =[{
-    idprediccion:1,
-    idperiodo_id:12,
-    fechainicio:"2021/07/12",
-    fechafin:"2021/09/1",
-    idzona_id:"ZORI",
-    idgasolina_id:"RE02",
-    precio:2.3,
-    variacion:0.1
-  }]
   
-  const tarjeta={
-    idzona: "ZCEN",
-    nombrezona: "Central",
-    idperiodo: 37,
-    inicio: "2021/05/18",
-    fin: "2021/05/31",
-    especial: 3.7,
-    regular: 3.51,
-    diesel: 3.03,
-    variacion_e: 0.06,
-    variacion_r: 0.06,
-    variacion_d: 0.11
-  }
   const consultarInicio = async()=>{
     let formData=new FormData();
     formData.append("dui",localStorage["idUsuario"])
     axios.post(props.url+"/consulta", formData).then((res)=>{
         setUsuario(res.data);
-        console.log(res.data)
       }).catch(err=>{
-        window.alert("No funciono")
+        window.alert("Ocurrio un error al traer la informacion del usuario")
       })
+    axios.post(props.url+"/ultimoscalculos", formData).then((res)=>{
+      if(res.data.descripcion){
+        setUltimo(res.data);
+      }
+    }).catch(err=>{
+      window.alert("Ocurrio un error al traer los ultimos calculos")
+    })
+    axios.post(props.url+"/historialusuario", formData).then((res)=>{
+      setHistorial(res.data);
+    }).catch(err=>{
+      window.alert("Ocurrio un error al traer su historial")
+    })      
   }
   useEffect(() => {
     document.title="Gestion Combustibles";  
     consultarInicio();
     console.log(localStorage["idUsuario"])
+    // eslint-disable-next-line
   },[]);
 
 
   const cerrarSesion = async() =>{
+    localStorage.clear();
     axios.post(props.url+"/jsoncerrarsesion").then((res)=>{
 
     })
@@ -140,36 +149,46 @@ const Usuario = (props) => {
   return (
     <div className={classes.root}>
       <Grid container="fixed" fullWidth>
-        <AppBar color="primary" position="static">
+        <AppBar color="primary" style={{heigth:'300px'}}position="static">
           <Avatar className={classes.avatar} ></Avatar>
-          <Typography className={classes.title} variant="h5">Bienvenido a su historial {props.idUser}
-          <Button color="secundary">Ingresar Precio</Button>
+          {usuario[0] !==undefined &&<Typography className={classes.title} variant="h5">Bienvenido a su historial {usuario[0].nombres} {usuario[0].apellidos}
+          <br/>
+          {localStorage["idUsuario"] === "10000001" &&<Button className={classes.button1} color="secundary">Ingresar Precio</Button>}
           <Link to="/">
-            <Button color="secundary" onClick={cerrarSesion}>Salir</Button>
+            <Button className={classes.button2}color="secundary" onClick={cerrarSesion}>Salir</Button>
           </Link>
-          </Typography>
+          <br/>
+          </Typography>}
         </AppBar>
-        <Paper className={classes.paper} elevation={10} >
-          <Tabs value={value} onChange={handleChange} aria-label="simple tabs example" align="center">
-            <Tab label="Historial de precios" {...a11yProps(0)} />
-            <Tab label="Graficos" {...a11yProps(1)} />
-          </Tabs>
-          <TabPanel value={value} index={0}>
-            <Typography variant="h5">Historial de Ajuste
-            <Button className={classes.button} color="primary">Crear Modelo</Button>
-            <Button className={classes.button} color="primary">Eliminar</Button>
-            </Typography>
-            <Tarjeta zona={tarjeta}/>
-            <Tarjeta zona={tarjeta}/>
-            <Tarjeta zona={tarjeta}/>
-            <br/>
-            <br/>
-            <Tabla prediccion={rows}/>
-          </TabPanel>
-          <TabPanel value={value} index={1}>
-            <Grafico/>
-          </TabPanel>
-        </Paper>
+        <Card className={classes.card}>
+          <CardContent>
+            <Tabs value={value} onChange={handleChange} aria-label="simple tabs example" align="center">
+              <Tab label="Historial de precios" {...a11yProps(0)} />
+              <Tab label="Graficos" {...a11yProps(1)} />
+              <Tab label="Crear modelos" {...a11yProps(1)} />
+            </Tabs>
+            <TabPanel value={value} index={0}>
+              <Typography style={{display:"block"}} variant="h5">Historial de Ajuste
+              <Button className={classes.button} align="right" color="primary">Eliminar</Button>
+              </Typography>
+              {ultimosDatos.length===0 && <Typography variant="h8">No hay registros </Typography>}
+              {ultimosDatos.length!==0 &&<Tarjeta zona={ultimosDatos[1]}/>}
+              {ultimosDatos.length!==0 &&<Tarjeta zona={ultimosDatos[0]}/>}
+              {ultimosDatos.length!==0 &&<Tarjeta zona={ultimosDatos[2]}/>}
+              <br/>
+              <br/>
+              <Typography variant="h5">Tabla del historial</Typography>
+              <br/>
+              {historial.length===0 && <Typography variant="h8">No hay registros </Typography>}
+              {historial.length !==0 &&<Tabla prediccion={historial}/>}
+            </TabPanel>
+            <TabPanel value={value} index={1}>
+              <Grafico/>
+            </TabPanel>
+            <TabPanel value={value} index={1}>
+            </TabPanel>
+          </CardContent>
+        </Card>
       </Grid>
     </div>
   );
