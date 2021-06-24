@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'GestionarTablasSecundarias',
     'Prediccion',
 ]
+SESSION_SAVE_EVERY_REQUEST = True
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',

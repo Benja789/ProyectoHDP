@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import PropTypes from 'prop-types';
 import {Link} from "react-router-dom";
 import {
@@ -115,13 +115,21 @@ const Usuario = (props) => {
     variacion_d: 0.11
   }
   const consultarInicio = async()=>{
-    axios.get(props.url+"/jsoniniciarsesion").then((res)=>{
+    let formData=new FormData();
+    formData.append("dui",localStorage["idUsuario"])
+    axios.post(props.url+"/consulta", formData).then((res)=>{
         setUsuario(res.data);
-        console.log(usuario)
+        console.log(res.data)
       }).catch(err=>{
-        window.alert("Los traer")
+        window.alert("No funciono")
       })
   }
+  useEffect(() => {
+    document.title="Gestion Combustibles";  
+    consultarInicio();
+    console.log(localStorage["idUsuario"])
+  },[]);
+
 
   const cerrarSesion = async() =>{
     axios.post(props.url+"/jsoncerrarsesion").then((res)=>{
@@ -134,7 +142,7 @@ const Usuario = (props) => {
       <Grid container="fixed" fullWidth>
         <AppBar color="primary" position="static">
           <Avatar className={classes.avatar} ></Avatar>
-          <Typography className={classes.title} variant="h5">Bienvenido a su historial
+          <Typography className={classes.title} variant="h5">Bienvenido a su historial {props.idUser}
           <Button color="secundary">Ingresar Precio</Button>
           <Link to="/">
             <Button color="secundary" onClick={cerrarSesion}>Salir</Button>

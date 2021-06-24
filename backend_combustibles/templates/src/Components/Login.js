@@ -114,7 +114,7 @@ const Login = (props) =>{
         }
         if(validar.usuario && validar.password){
             let formData = new FormData();
-            formData.append("usuario", data.usuario);
+            formData.append("email", data.usuario);
             formData.append("password", data.password);
             mandarUsuario(formData)
         }
@@ -124,10 +124,9 @@ const Login = (props) =>{
     const mandarUsuario = async(data)=>{
         axios.post(props.url+"/jsoniniciarsesion", data).then(res=>{
             setInicio(res.data);
-            console.log(res.data);
+            localStorage.setItem("idUsuario", res.data.idUsuario);
         }).catch(err=>{
             window.alert("Algo ha salido mal, intentelo más tarde");   
-            console.log(err)        
         })
     }
 
@@ -193,8 +192,8 @@ const Login = (props) =>{
                         variant="contained" 
                         onClick={iniciarSesion}
                         >Ingresar</Button> 
-                    {inicioSesion.validarse === true && <Redirect to="/usuario"/>}
-                    <Link to ="/">
+                    {inicioSesion.validarse === true && <Redirect to="/usuario" id={inicioSesion.idUsuario}/>}
+                    <Link to ="/"  >
                         <Button className={classes.button} type ='submit' color='primary' variant="contained" >Cancelar</Button>
                     </Link>
                 </Card>

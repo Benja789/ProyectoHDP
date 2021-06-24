@@ -20,7 +20,7 @@ from django.views.generic import TemplateView
 from backend_combustibles.views import vista_cargador, vista_inicio
 from Prediccion.views import sendData_Historial, grafica_central, grafica_occidental, grafica_oriental
 from GestionarTablasSecundarias.views import sendData_periodo, sendData_zonas
-from GestionUsuario.views import iniciarSesion, vista_login,vista_usuario, vista_registrarse, registrarse
+from GestionUsuario.views import iniciarSesion, vista_login,vista_usuario, vista_registrarse, registrarse, cerrarSesion, consultarSesion
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -32,8 +32,10 @@ urlpatterns = [
     path('jsonhistorial', sendData_Historial), #Historial de los precios aplicados de la pagina inicio
     path('jsonpreciosvigentes', sendData_zonas), #Datos de la pagina del inicio
     path('jsonregistrarse',registrarse ), #URL para registrarse 
+    path('consulta', consultarSesion),
     path('jsonperiodo', sendData_periodo), #Devuelve todos los periodos vigentes
     path('jsoniniciarsesion', iniciarSesion), #Metodo encargado para validar la sesion
+    path('jsoncerrarsesion', cerrarSesion),
     path('jsongraficacentral',grafica_central), #Manda los datos de la grafica central
     path('jsongraficaoccidental', grafica_occidental),#Manda los datoas para la grafica de la zona occidental
     path('jsongraficaoriental', grafica_oriental),#Manda los datoas para la grafica de la zona oriental
