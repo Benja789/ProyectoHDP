@@ -22,6 +22,7 @@ import Tarjeta  from "./VistasInicio/TarjetasPrecios";
 import Tabla from './VistasInicio/Tabla';
 import MapaSalvador from '../Media/MapaSalvadorZonas.png';
 import Grafico from './VistasInicio/Grafico';
+import TablaPeriodo from './VistasInicio/TablaPeriodo';
 
 //Funciones secundarias de la app bara
 function TabPanel(props) {
@@ -134,6 +135,7 @@ const Inicio = (props) => {
     }).catch(err=>{
       window.alert("No se han podido traer los datos para la grafica de oriental");
     })
+    getPeriodo();
   }
 
   //Hace una peticion de los periodos e el historial de la tabla 
@@ -143,11 +145,8 @@ const Inicio = (props) => {
     }).catch(err =>{
       window.alert("No se han podido traer los datos de la tabla");
     })
-    axios.get(props.url+"/jsonperiodo").then((res)=>{
-      setPeriodo(res.data);
-    }).catch(err=>{
-      window.alert("No se han podido traer los datos relacionados con el periodo");
-    })
+    getPeriodo();
+    
   }
 
   //Hace una peticion de los precios que se encuentran vigentes
@@ -175,6 +174,14 @@ const Inicio = (props) => {
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
   };    
+
+  const getPeriodo =async()=>{
+    axios.get(props.url+"/jsonperiodo").then((res)=>{
+      setPeriodo(res.data);
+    }).catch(err=>{
+      window.alert("No se han podido traer los datos relacionados con el periodo");
+    })
+  }
 
   // solicitar un periodo en especifico
   const seleccionarPeriodo = async(formData)=>{
@@ -269,7 +276,7 @@ const Inicio = (props) => {
           <Grafico zona={central} nombre={"Central"}/>
           <br/>
           <Grafico zona={oriental} nombre={"Oriental"}/>
-
+          <TablaPeriodo periodo={periodo}/>
         </TabPanel>
         </CardContent>
         </Card>

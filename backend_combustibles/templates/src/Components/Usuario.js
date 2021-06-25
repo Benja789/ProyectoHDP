@@ -23,6 +23,7 @@ import axios from 'axios';
 import Tabla from './VistasUsuario/TablaUsuario'
 import Tarjeta from './VistasInicio/TarjetasPrecios'
 import Grafico from './VistasInicio/Grafico';
+import TablaPeriodo from './VistasInicio/TablaPeriodo';
 
 function a11yProps(index) {
   return {
@@ -115,6 +116,7 @@ const Usuario = (props) => {
   const [usuario, setUsuario] =useState([]);
   const [ultimosDatos, setUltimo] =useState([]);
   const [historial, setHistorial]= useState([]);
+  const [periodo, setPeriodo] = useState([]);
   const [graficaCentral, setCentral]= useState();
   const [graficaOccidental, setOccidental]= useState();
   const [graficaOriental, setOriental] =useState();
@@ -140,7 +142,13 @@ const Usuario = (props) => {
     setValue(newValue);
   };  
   
-  
+  const getPeriodo =async()=>{
+    axios.get(props.url+"/jsonperiodo").then((res)=>{
+      setPeriodo(res.data);
+    }).catch(err=>{
+      window.alert("No se han podido traer los datos relacionados con el periodo");
+    })
+  }
 
   //Manda a trare los datos del usuario
   const consultarInicio = async()=>{
@@ -185,6 +193,7 @@ const Usuario = (props) => {
     }).catch(err=>{
       window.alert("Ocurrio un error al traer los ultimos calculos")
     })
+    getPeriodo();
   }
 
   //Cierra sesion
@@ -276,6 +285,8 @@ const Usuario = (props) => {
               <Grafico zona={graficaCentral} nombre={"Central"}/>
               <br/>
               <Grafico zona={graficaOriental} nombre={"Oriental"}/>
+              <br/>
+              <TablaPeriodo periodo={periodo}/>
             </TabPanel>
             <TabPanel value={value} index={2}>
               <Typography variant="h5">Complete los campos, para poder hacer su calculo</Typography>
