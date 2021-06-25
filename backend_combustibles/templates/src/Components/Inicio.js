@@ -63,6 +63,11 @@ const useStyles = makeStyles((theme) => ({
     flexGrow: 1,
     backgroundColor: theme.palette.background.paper,
   },
+  card: {
+    padding: 20,
+    width: '90%',
+    margin: "20px auto",
+  },
   button:{
     position: 'absolute',
     width:'10%',
@@ -182,7 +187,7 @@ const Inicio = (props) => {
   }
   
   //Metodo que se encarga de crear un objeto para mandarlo al servidor
-  const periodoN = (index ) =>{
+  const periodoN = (index) =>{
     let formData = new FormData();
     formData.append("idperiodo", periodo[index].idperiodo);
     formData.append("fechainicio", periodo[index].fechainicio);
@@ -204,7 +209,7 @@ const Inicio = (props) => {
   return (
     <div className={classes.root}>
       {/*Barra de superior */}
-      <AppBar position="static" style={{ background: "#303F9F" }}> 
+      <AppBar position="static" style={{ background: "#303F9F",height:'100px'}}> 
         <Toolbar className={classes.toolbar}>
           <h1 className={classes.h1} align="center">
           Precios de los combustibles El Salvador
@@ -214,30 +219,27 @@ const Inicio = (props) => {
           </Link>
           <hr/>
         </Toolbar>
+      </AppBar>
+
+      <Card className={classes.card}>
+        <CardContent>
         <Tabs value={value} onChange={handleChange} aria-label="simple tabs example" align="center">
           <Tab label="Precios por zona"  {...a11yProps(0)} />
           <Tab label="Historial de precios" onClick={getTablaInicial}  {...a11yProps(1)} />
           <Tab label="Graficos" onClick={datosGrafica} {...a11yProps(2)} />
         </Tabs>
-      </AppBar>
         <TabPanel value={value} index={0}>
-        <Card>
-        <CardContent>
           <img className={classes.media} src={MapaSalvador} alt="Mapa de El Salvador"/>
           <br/>
           <br/>
           {zonas[1] !== undefined && <Tarjeta zona={zonas[1]}/>}
           {zonas[0] !== undefined && <Tarjeta zona={zonas[0]}/>}
           {zonas[2] !== undefined && <Tarjeta zona={zonas[2]}/>}
-        </CardContent>
-        </Card>
         </TabPanel>
         <TabPanel value={value} index={1}>
-        <Card>
-        <CardContent>
           <Typography variant="h5">Tabla del historial de los precios</Typography>
-          <Button  aria-controls="simple-menu" aria-haspopup="true" onClick={handleClick}>Selecciona Periodo</Button>
-          <Button  aria-controls="simple-menu" aria-haspopup="true" onClick={resetear}>Mostrar tabla inicial</Button>
+          <Button  aria-controls="simple-menu" aria-haspopup="true" variant="outlined" onClick={handleClick}>Selecciona Periodo</Button>
+          <Button  aria-controls="simple-menu" aria-haspopup="true" variant="outlined" onClick={resetear}>Mostrar tabla inicial</Button>
           <Menu
             id="simple-menu"
             anchorEl={anchorEl}
@@ -259,21 +261,18 @@ const Inicio = (props) => {
           </Menu>
           {nuevoPeriodo === undefined && <Tabla prediccion={prediccion}/>}
           {nuevoPeriodo!== undefined && <Tabla prediccion={nuevoPeriodo}/>}
-        </CardContent>
-        </Card>
+        
         </TabPanel>
         <TabPanel value={value} index={2}>
-        <Card>
-        <CardContent>
           <Grafico zona={occidental} nombre={"Occidental"}/>
           <br/>
           <Grafico zona={central} nombre={"Central"}/>
           <br/>
           <Grafico zona={oriental} nombre={"Oriental"}/>
 
-        </CardContent>
-        </Card> 
         </TabPanel>
+        </CardContent>
+        </Card>
     </div>
   );
 }

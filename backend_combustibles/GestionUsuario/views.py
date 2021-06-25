@@ -37,15 +37,9 @@ def iniciarSesion (request):
                     'correo'))
             #print(user[0]['password'])
             if (len(user)>0):
-            #if user is not None and bcrypt.checkpw(password.encode('utf-8'), user[0]['password'].encode('utf-8')):
-                #print("Segundo if")
-                #request.session['dui'] = user[0]['dui']
                 comprobarValidarse['idUsuario'] =user[0]['dui']
-                #request.session.get('dui',user[0]['dui'])
-                #print(request.session.get('dui'))
                 request.session['dui'] =comprobarValidarse['idUsuario']
                 request.session.modified = True
-                #request.session.save
                 comprobarValidarse['validarse'] =True
                 comprobarValidarse['correo'] =True
                 comprobarValidarse['password'] =True
@@ -55,19 +49,21 @@ def iniciarSesion (request):
                 print("Tercer if")
                 if len(list(Usuario.objects.filter(correo=email).values())) >0:
                     comprobarValidarse['correo'] =True
-                    if  len(list(Usuario.objects.filter(password=password).values()))>0:
-                        comprobarValidarse['password'] =True             
+                    comprobarValidarse['password'] =False             
+                    if  len(list(Usuario.objects.filter(Q(correo=email) & Q(password=password)).values()))>0:
+                        comprobarValidarse['password'] =False             
                             
     return JsonResponse(comprobarValidarse)
 
 @csrf_exempt
 def cerrarSesion (request):
-    #print(request.session["dui"])
+    #Metodo de cierre de sesion
     del request.session
     return JsonResponse({"Cerrada": True})
 
 @csrf_exempt 
 def consultarSesion (request):
+    #Metodo que trae la informacion del usuario
     id =request.POST['dui']
     informacionUsario =list(Usuario.objects.filter(dui=id).values('dui', 'nombres','apellidos'))
     return JsonResponse(informacionUsario, safe=False)
@@ -75,8 +71,8 @@ def consultarSesion (request):
 
 @csrf_exempt
 def registrarse(request):
+    #Metodo que permite registrarse
     usarios = list(Usuario.objects.filter(Q(dui=request.POST['dui']) | Q(correo=request.POST['email'])).values('dui'))
-
     if len(usarios)==0:
         #del (usarios)
         dui = request.POST['dui']
@@ -113,8 +109,9 @@ def registrarse(request):
 
 @csrf_exempt
 def ultimosCalculos (request):
+    #Metodo que trae los ultimos calculos del usuario
     id =request.POST['dui']
-    periodoUsuario = list(Prediccion.objects.filter(dui=id).values())
+    periodoUsuario = list(Prediccion.objects.filter(dui=id).values()[:9])
     if len(periodoUsuario)>0:
         del periodoUsuario
         zonas = list(Zona.objects.values())
@@ -170,6 +167,7 @@ def ultimosCalculos (request):
 
 @csrf_exempt
 def historialUsuario (request):
+    #Metodo que trae el historial del usuario
     id =request.POST['dui']
     historial = list(Prediccion.objects.filter(dui=id).values(
             "idprediccion",
@@ -208,13 +206,103 @@ def historialUsuario (request):
     del(historial, periodo)
     return JsonResponse(datosEnviados, safe=False)
 
+@csrf_exempt
+def grafica_central_usuario (request):
+    #Metodo que permite hacer la grafica del usuario
+    id =request.POST['dui']
+    datos =list(Prediccion.objects.filter(Q(idzona_id="ZCEN")& Q(dui=id)).values("idperiodo_id", "idgasolina_id", "precio"))
+    periodo = list(Periodo.objects.values('idperiodo'))
+    respuesta =[]
+    for i in range(len(periodo)+1):
+        if i != 0:
+            diccionario ={
+                "idperiodo":i,
+                "Especial":0,
+                "Regular":0,
+                "Diesel":0
+            }
+            
+            for j in range(len(datos)):
+                if datos[j]["idperiodo_id"] == i :
+                    if datos[j]["idgasolina_id"] == "ES01" :
+                        diccionario["Especial"] = datos[j]["precio"]
+                    elif datos[j]["idgasolina_id"] == "RE02":
+                        diccionario["Regular"] = datos[j]["precio"]
+                    elif datos[j]["idgasolina_id"] == "DI03":
+                        diccionario["Diesel"] = datos[j]["precio"]
+            respuesta.append(diccionario)
+            del(diccionario)
+    
+    return JsonResponse(respuesta, safe=False)
+
+@csrf_exempt
+def grafica_occidental_usuario (request):
+    #Metodo que permite hacer la grafica del usuario
+    id =request.POST['dui']
+    datos =list(Prediccion.objects.filter(Q(idzona_id="ZOCC")& Q(dui=id)).values("idperiodo_id", "idgasolina_id", "precio"))
+    periodo = list(Periodo.objects.values('idperiodo'))
+    respuesta =[]
+    for i in range(len(periodo)+1):
+        if i != 0:
+            diccionario ={
+                "idperiodo":i,
+                "Especial":0,
+                "Regular":0,
+                "Diesel":0
+            }
+            
+            for j in range(len(datos)):
+                if datos[j]["idperiodo_id"] == i :
+                    if datos[j]["idgasolina_id"] == "ES01" :
+                        diccionario["Especial"] = datos[j]["precio"]
+                    elif datos[j]["idgasolina_id"] == "RE02":
+                        diccionario["Regular"] = datos[j]["precio"]
+                    elif datos[j]["idgasolina_id"] == "DI03":
+                        diccionario["Diesel"] = datos[j]["precio"]
+            respuesta.append(diccionario)
+            del(diccionario)
+    
+    return JsonResponse(respuesta, safe=False)
+
+
+@csrf_exempt
+def grafica_oriental_usuario (request):
+    #Metodo que permite hacer la grafica del usuario
+    id =request.POST['dui']
+    datos =list(Prediccion.objects.filter(Q(idzona_id="ZORI")& Q(dui=id)).values("idperiodo_id", "idgasolina_id", "precio"))
+    periodo = list(Periodo.objects.values('idperiodo'))
+    respuesta =[]
+    for i in range(len(periodo)+1):
+        if i != 0:
+            diccionario ={
+                "idperiodo":i,
+                "Especial":0,
+                "Regular":0,
+                "Diesel":0
+            }
+            
+            for j in range(len(datos)):
+                if datos[j]["idperiodo_id"] == i :
+                    if datos[j]["idgasolina_id"] == "ES01" :
+                        diccionario["Especial"] = datos[j]["precio"]
+                    elif datos[j]["idgasolina_id"] == "RE02":
+                        diccionario["Regular"] = datos[j]["precio"]
+                    elif datos[j]["idgasolina_id"] == "DI03":
+                        diccionario["Diesel"] = datos[j]["precio"]
+            respuesta.append(diccionario)
+            del(diccionario)
+    
+    return JsonResponse(respuesta, safe=False)
 
 def vista_registrarse(request):
+    #Renderizado de la vista registrarse
     return render(request, 'index.html')
 
 def vista_login(request):
+    #Renderizado de la vista login
     return render(request, 'index.html')
 
 def vista_usuario(request):
+    #Renderizado de la vista usuario    
     return render (request, 'index.html')
 

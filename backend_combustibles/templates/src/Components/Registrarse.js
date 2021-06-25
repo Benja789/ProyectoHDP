@@ -182,7 +182,6 @@ const Registrarse = (props) => {
                                 <FormHelperText className={classes.error}>{errors?.nombre?.message}</FormHelperText>
                             </Grid>
                             <Grid item xs={12} sm={6}>
-                                
                                 <TextField 
                                     className={classes.text}
                                     label="Apellido"

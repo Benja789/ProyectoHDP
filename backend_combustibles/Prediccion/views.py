@@ -7,6 +7,7 @@ from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 from Prediccion.models import Prediccion
 from GestionarTablasSecundarias.models import Periodo
+from Prediccion.calculo_combustible import generacion_modelo
 from django.views.decorators.csrf import csrf_exempt
 
 # Create your views here.
@@ -170,3 +171,44 @@ def grafica_oriental (request):
             del(diccionario)
     
     return JsonResponse(respuesta, safe=False)
+
+@csrf_exempt
+def generar_modelo(request):
+    dui =request.POST['dui']
+    zona =request.POST['zona']
+    datos= [
+        float(request.POST['butano']),#0
+        float(request.POST['fob']),#1
+        float(request.POST['marino']),#2
+        float(request.POST['mayorista']),#3
+        float(request.POST['unl87']),#4
+        float(request.POST['unl93']),#5
+        float(request.POST['minorista'])#6
+        ]
+    butano =float(request.POST['butano'])
+    fob=float(request.POST['fob'])#1
+    flete_m= float(request.POST['marino'])
+    m_mayorista= float(request.POST['mayorista'])#3
+    m_minorista=float(request.POST['minorista'])#6
+    u87= float(request.POST['unl87'])
+    u93=float(request.POST['unl93'])
+
+    estado="Modelo almacenado"
+
+    for i in range(len(datos)):
+        if datos[i]<=0:
+            return JsonResponse({"resultado":"Los datos deben de ser positivos"})
+    
+    almacen=generacion_modelo(
+        zona,
+        fob,
+        u87,
+        u93,
+        butano,
+        flete_m,
+        m_mayorista,
+        m_minorista
+    )
+    print(almacen)
+
+    return JsonResponse({"resultado":"Modelo generado y almacenado"})

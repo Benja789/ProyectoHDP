@@ -18,7 +18,7 @@ from django.contrib import admin
 from django.urls import path
 from django.views.generic import TemplateView
 from backend_combustibles.views import vista_cargador, vista_inicio
-from Prediccion.views import sendData_Historial, grafica_central, grafica_occidental, grafica_oriental
+from Prediccion.views import sendData_Historial, grafica_central, grafica_occidental, grafica_oriental, generar_modelo
 from GestionarTablasSecundarias.views import sendData_periodo, sendData_zonas
 from GestionUsuario.views import *
 
@@ -46,9 +46,13 @@ urlpatterns = [
     path('jsoniniciarsesion', iniciarSesion), #Metodo encargado para validar la sesion
 
     #peticiones usuario
-    path('consulta', consultarSesion),
+    path('jsonconsulta', consultarSesion),
+    path('jsoncentralusuario', grafica_central_usuario),
+    path('jsonoccidentalusuario', grafica_occidental_usuario),
+    path('jsonorientalusuario', grafica_oriental_usuario),
     path('jsoncerrarsesion', cerrarSesion),
-    path('ultimoscalculos', ultimosCalculos),
-    path('historialusuario', historialUsuario),
+    path('jsongenerarmodelo', generar_modelo),
+    path('jsonultimoscalculos', ultimosCalculos),
+    path('jsonhistorialusuario', historialUsuario),
 
 ]
