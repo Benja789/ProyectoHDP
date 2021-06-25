@@ -20,7 +20,7 @@ import {
   Grid
 } from '@material-ui/core';
 import axios from 'axios';
-import Tabla from './VistasInicio/Tabla'
+import Tabla from './VistasUsuario/TablaUsuario'
 import Tarjeta from './VistasInicio/TarjetasPrecios'
 import Grafico from './VistasInicio/Grafico';
 
@@ -139,7 +139,9 @@ const Usuario = (props) => {
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };  
-   
+  
+  
+
   //Manda a trare los datos del usuario
   const consultarInicio = async()=>{
     let formData=new FormData();
@@ -242,7 +244,6 @@ const Usuario = (props) => {
           <Avatar className={classes.avatar} ></Avatar>
           {usuario[0] !==undefined &&<Typography className={classes.title} variant="h5">Bienvenido a su historial {usuario[0].nombres} {usuario[0].apellidos}
           <br/>
-          {localStorage["idUsuario"] === "10000001" &&<Button className={classes.button1} color="secundary">Ingresar Precio</Button>}
           <Link to="/">
             <Button className={classes.button2}color="secundary" onClick={cerrarSesion}>Salir</Button>
           </Link>
@@ -252,7 +253,7 @@ const Usuario = (props) => {
         <Card className={classes.card}>
           <CardContent>
             <Tabs value={value} onChange={handleChange} aria-label="simple tabs example" align="center">
-              <Tab label="Historial de precios" onClick={resetear} {...a11yProps(0)} />
+              <Tab label="Historial de precios" onClick={(event) =>{resetear(); consultarInicio();}} {...a11yProps(0)} />
               <Tab label="Graficos" onClick={graficasData} {...a11yProps(1)} />
               <Tab label="Crear modelos" {...a11yProps(2)} />
             </Tabs>
@@ -266,10 +267,8 @@ const Usuario = (props) => {
               <br/>
               <br/>
               <Typography variant="h5">Tabla del historial</Typography>
-              <Button className={classes.button} align="right" variant="outlined" color="primary">Eliminar</Button>
-              <br/>
               {historial.length===0 && <Typography variant="h8">No hay registros </Typography>}
-              {historial.length !==0 &&<Tabla prediccion={historial}/>}
+              {historial.length !==0 &&<Tabla url ={props.url} prediccion={historial}/>}
             </TabPanel>
             <TabPanel value={value}  index={1}>
               <Grafico zona={graficaOccidental} nombre={"Occidental"}/>
@@ -311,8 +310,7 @@ const Usuario = (props) => {
                   </Grid>
                   <Grid item xs={12} sm={6}>
                     <TextField
-                      label="FOB "
-                      type="number"
+                      label="FOB"
                       className={classes.text}
                       name="fob"
                       {...register("fob",{
@@ -330,7 +328,6 @@ const Usuario = (props) => {
                   <Grid item xs={12} sm={6}>
                     <TextField
                       label="Platt´s UNL-87 "
-                      type="number"
                       className={classes.text}
                       name="unl87"
                       {...register("unl87",{
@@ -348,7 +345,6 @@ const Usuario = (props) => {
                   <Grid item xs={12} sm={6}>
                     <TextField
                       label="Platt´s UNL-93 "
-                      type="number"
                       className={classes.text}
                       name="unl93" 
                     {...register("unl93",{
@@ -366,7 +362,6 @@ const Usuario = (props) => {
                   <Grid item xs={12} sm={6}>
                     <TextField
                       label="Platt´s butano"
-                      type="number"
                       className={classes.text}
                       name="butano"
                       {...register("butano",{
@@ -384,7 +379,6 @@ const Usuario = (props) => {
                   <Grid item xs={12} sm={6}>
                     <TextField
                       label="Flete marino"
-                      type="number"
                       className={classes.text}
                       name="marino"
                       {...register("marino",{
@@ -402,7 +396,6 @@ const Usuario = (props) => {
                   <Grid item xs={12} sm={6}>
                     <TextField
                       label="Margen mayorista"
-                      type="number"
                       className={classes.text}
                       name="mayorista"
                       {...register("mayorista",{
@@ -420,7 +413,6 @@ const Usuario = (props) => {
                   <Grid item xs={12} sm={6}>
                     <TextField
                       label="Margen minorista"
-                      type="number"
                       className={classes.text}
                       name="minorista"
                       {...register("minorista",{

@@ -130,9 +130,7 @@ const Registrarse = (props) => {
         event.preventDefault();
     };
     const registrarse =(data)=>{
-
         if (data.password ===data.passwordConfir){
-            //console.log("funciona")
             let formData = new FormData();
             formData.append("dui", data.dui);
             formData.append("nombre", data.nombre);
@@ -152,7 +150,6 @@ const Registrarse = (props) => {
     const solicitarCuenta =async(data)=>{
         axios.post(props.url+"/jsonregistrarse", data).then(res=>{
             setValidarR(res.data)
-            console.log(validarR.Creado)
             if(validarR.Creado ===false){
                 window.alert("Usuario ya existe")
             }

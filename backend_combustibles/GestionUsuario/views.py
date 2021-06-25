@@ -35,7 +35,6 @@ def iniciarSesion (request):
                     'apellidos',
                     'password',
                     'correo'))
-            #print(user[0]['password'])
             if (len(user)>0):
                 comprobarValidarse['idUsuario'] =user[0]['dui']
                 request.session['dui'] =comprobarValidarse['idUsuario']
@@ -46,20 +45,19 @@ def iniciarSesion (request):
                 
                 
             if len(user) ==0:
-                print("Tercer if")
                 if len(list(Usuario.objects.filter(correo=email).values())) >0:
                     comprobarValidarse['correo'] =True
                     comprobarValidarse['password'] =False             
                     if  len(list(Usuario.objects.filter(Q(correo=email) & Q(password=password)).values()))>0:
                         comprobarValidarse['password'] =False             
                             
-    return JsonResponse(comprobarValidarse)
+    return JsonResponse(comprobarValidarse, safe=False)
 
 @csrf_exempt
 def cerrarSesion (request):
     #Metodo de cierre de sesion
     del request.session
-    return JsonResponse({"Cerrada": True})
+    return JsonResponse({"Cerrada": True}, safe=False)
 
 @csrf_exempt 
 def consultarSesion (request):
@@ -84,9 +82,6 @@ def registrarse(request):
         password =request.POST['password']
         fecha=request.POST['fecha']
 
-        pEncryptada = bcrypt.hashpw(
-            str(password).encode('utf-8'), bcrypt.gensalt())
-        #print(pEncryptada)
         nuevoUsuario = Usuario.objects.create(
             dui =dui,
             nombres=nombre,
@@ -101,17 +96,17 @@ def registrarse(request):
             nuevoUsuario.save()
             del nuevoUsuario;
         except:
-            return JsonResponse({"Creado":False})
+            return JsonResponse({"Creado":False}, safe=False)
 
-        return JsonResponse({"Creado":True})
-    return JsonResponse({"Creado":False})
+        return JsonResponse({"Creado":True}, safe=False)
+    return JsonResponse({"Creado":False}, safe=False)
 
 
 @csrf_exempt
 def ultimosCalculos (request):
     #Metodo que trae los ultimos calculos del usuario
     id =request.POST['dui']
-    periodoUsuario = list(Prediccion.objects.filter(dui=id).values()[:9])
+    periodoUsuario = list(Prediccion.objects.filter(dui=id).values().order_by('-idperiodo')[:9])
     if len(periodoUsuario)>0:
         del periodoUsuario
         zonas = list(Zona.objects.values())
@@ -123,7 +118,6 @@ def ultimosCalculos (request):
             'variacion').filter(dui=id).order_by('-idprediccion')[:9])
         periodo = list(Periodo.objects.values('fechainicio','fechafin').order_by('-idperiodo')[:1])
         datosEnviados=[]
-
         #Arreglo del diccionario para mandaro como respuesta a una peticion de Ajax
         for i in range(3):
             diccionario = {
@@ -163,7 +157,7 @@ def ultimosCalculos (request):
             datosEnviados.append(diccionario)
             del(diccionario)
         return JsonResponse (datosEnviados, safe = False)
-    return JsonResponse({"descripcion": False})
+    return JsonResponse({"descripcion": False}, safe=False)
 
 @csrf_exempt
 def historialUsuario (request):
@@ -221,7 +215,6 @@ def grafica_central_usuario (request):
                 "Regular":0,
                 "Diesel":0
             }
-            
             for j in range(len(datos)):
                 if datos[j]["idperiodo_id"] == i :
                     if datos[j]["idgasolina_id"] == "ES01" :

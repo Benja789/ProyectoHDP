@@ -18,7 +18,7 @@ from django.contrib import admin
 from django.urls import path
 from django.views.generic import TemplateView
 from backend_combustibles.views import vista_cargador, vista_inicio
-from Prediccion.views import sendData_Historial, grafica_central, grafica_occidental, grafica_oriental, generar_modelo
+from Prediccion.views import *
 from GestionarTablasSecundarias.views import sendData_periodo, sendData_zonas
 from GestionUsuario.views import *
 
@@ -46,13 +46,14 @@ urlpatterns = [
     path('jsoniniciarsesion', iniciarSesion), #Metodo encargado para validar la sesion
 
     #peticiones usuario
-    path('jsonconsulta', consultarSesion),
-    path('jsoncentralusuario', grafica_central_usuario),
-    path('jsonoccidentalusuario', grafica_occidental_usuario),
-    path('jsonorientalusuario', grafica_oriental_usuario),
-    path('jsoncerrarsesion', cerrarSesion),
-    path('jsongenerarmodelo', generar_modelo),
-    path('jsonultimoscalculos', ultimosCalculos),
-    path('jsonhistorialusuario', historialUsuario),
+    path('jsonconsulta', consultarSesion),#consulta el inicio de sesion
+    path('jsoncentralusuario', grafica_central_usuario),#Muestra los datos de central para grafica
+    path('jsonoccidentalusuario', grafica_occidental_usuario),#muestra los datos de occidental para grafica
+    path('jsonorientalusuario', grafica_oriental_usuario),#Muestra los datos de oriental para grafica
+    path('jsoncerrarsesion', cerrarSesion),#cierra la sesion
+    path('jsongenerarmodelo', generar_modelo),#Genera un modelo nuevo
+    path('jsonultimoscalculos', ultimosCalculos),#obtiene los ultimos modelos generados
+    path('jsonhistorialusuario', historialUsuario),#obtiene gran parte del historial
+    path('jsoneliminardato', eliminar_dato_historial),#elimina un dato del historial
 
 ]

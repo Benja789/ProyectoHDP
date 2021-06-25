@@ -60,15 +60,13 @@ def generacion_modelo(nombre_zona,fob, unl_87,unl_93,butano, flete_marino, marge
 
     if zona =="Zona Central":
         fl=0.036
-    elif zona== "ZOCC":
+    elif zona== "Zona Occidental":
         fl=0.44
-    elif zona=="ZORI":
+    elif zona=="Zona Oriental":
         fl=0.074
 
     for i in range(3):
         pcif[i] = (pfob) + ac[i] + fm + pt + sm
         pc = (pcif[i] + ci + fl + mm + mmin + t[i])
         PC [i] = pc + (pc*0.13)
-
-
     return PC

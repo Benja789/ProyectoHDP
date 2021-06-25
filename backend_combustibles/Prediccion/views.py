@@ -6,7 +6,8 @@ from django.http import JsonResponse
 from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 from Prediccion.models import Prediccion
-from GestionarTablasSecundarias.models import Periodo
+from GestionUsuario.models import Usuario
+from GestionarTablasSecundarias.models import Periodo, Zona, Gasolina
 from Prediccion.calculo_combustible import generacion_modelo
 from django.views.decorators.csrf import csrf_exempt
 
@@ -174,17 +175,26 @@ def grafica_oriental (request):
 
 @csrf_exempt
 def generar_modelo(request):
-    dui =request.POST['dui']
+    user = Usuario(dui= request.POST['dui'])
     zona =request.POST['zona']
-    datos= [
-        float(request.POST['butano']),#0
-        float(request.POST['fob']),#1
-        float(request.POST['marino']),#2
-        float(request.POST['mayorista']),#3
-        float(request.POST['unl87']),#4
-        float(request.POST['unl93']),#5
-        float(request.POST['minorista'])#6
-        ]
+    try:
+        datos= [
+            float(request.POST['butano']),#0
+            float(request.POST['fob']),#1
+            float(request.POST['marino']),#2
+            float(request.POST['mayorista']),#3
+            float(request.POST['unl87']),#4
+            float(request.POST['unl93']),#5
+            float(request.POST['minorista'])#6
+            ]
+    except:
+        return JsonResponse({"resultado":"Los datos deben de ser numeros"})
+
+    for i in range(len(datos)):
+        if datos[i]<=0:
+            return JsonResponse({"resultado":"Los datos deben de ser positivos"})
+
+    del datos
     butano =float(request.POST['butano'])
     fob=float(request.POST['fob'])#1
     flete_m= float(request.POST['marino'])
@@ -192,13 +202,23 @@ def generar_modelo(request):
     m_minorista=float(request.POST['minorista'])#6
     u87= float(request.POST['unl87'])
     u93=float(request.POST['unl93'])
-
-    estado="Modelo almacenado"
-
-    for i in range(len(datos)):
-        if datos[i]<=0:
-            return JsonResponse({"resultado":"Los datos deben de ser positivos"})
+    periodo = list(Periodo.objects.values('idperiodo').order_by('-idperiodo')[:1])
+    p =Periodo(idperiodo=periodo[0]["idperiodo"])
+    id_zona=""
+    if zona =="Zona Central":
+        id_zona="ZCEN"
+    elif zona== "Zona Occidental":
+        id_zona="ZOCC"
+    elif zona=="Zona Oriental":
+        id_zona="ZORI"
     
+    precioEs= list(Prediccion.objects.filter(Q(estado="Aplicado")&Q(idzona_id=id_zona)&Q(idgasolina_id="ES01")).values(
+        'precio').order_by('-idprediccion')[:1])
+    precioRe= list(Prediccion.objects.filter(Q(estado="Aplicado")&Q(idzona_id=id_zona)&Q(idgasolina_id="RE02")).values(
+        'precio').order_by('-idprediccion')[:1])
+    precioDi= list(Prediccion.objects.filter(Q(estado="Aplicado")&Q(idzona_id=id_zona)&Q(idgasolina_id="DI03")).values(
+        'precio').order_by('-idprediccion')[:1])
+   
     almacen=generacion_modelo(
         zona,
         fob,
@@ -209,6 +229,47 @@ def generar_modelo(request):
         m_mayorista,
         m_minorista
     )
-    print(almacen)
+    variacionEs = almacen[0]-float(precioEs[0]["precio"])
+    variacionRe = almacen[1]-float(precioRe[0]["precio"])
+    variacionDi = almacen[2]-float(precioDi[0]["precio"])
+    z = Zona(idzona=id_zona)
+    es = Gasolina(idgasolina="ES01")
+    re = Gasolina(idgasolina="RE02")
+    di = Gasolina(idgasolina="DI03")
+    
+    precioEspecial=Prediccion.objects.create(
+        dui=user,
+        idperiodo=p,
+        idzona=z,
+        idgasolina=es,
+        precio=almacen[0],
+        variacion=variacionEs,
+        estado="Calculado")
+    precioRegular=Prediccion.objects.create(
+        dui=user,
+        idperiodo=p,
+        idzona=z,
+        idgasolina=re,
+        precio=almacen[1],
+        variacion=variacionRe,
+        estado="Calculado")
+    precioDiesel=Prediccion.objects.create(
+        dui=user,
+        idperiodo=p,
+        idzona=z,
+        idgasolina=di,
+        precio=almacen[2],
+        variacion=variacionDi,
+        estado="Calculado")
+    precioEspecial.save()
+    precioRegular.save()
+    precioDiesel.save()
+   
 
-    return JsonResponse({"resultado":"Modelo generado y almacenado"})
+    return JsonResponse({"resultado":"Modelo generado y almacenado"}, safe=False)
+
+@csrf_exempt
+def eliminar_dato_historial(request):
+    id=request.POST['id']
+    Prediccion.objects.filter(idprediccion=id).delete()
+    return JsonResponse({"respuesta":"Dato eliminado correctamente"}, safe=False)
