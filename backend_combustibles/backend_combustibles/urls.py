@@ -52,7 +52,6 @@ urlpatterns = [
     path('jsonorientalusuario', grafica_oriental_usuario),#Muestra los datos de oriental para grafica
     path('jsoncerrarsesion', cerrarSesion),#cierra la sesion
     path('jsongenerarmodelo', generar_modelo),#Genera un modelo nuevo
-    path('jsonultimoscalculos', ultimosCalculos),#obtiene los ultimos modelos generados
     path('jsonhistorialusuario', historialUsuario),#obtiene gran parte del historial
     path('jsoneliminardato', eliminar_dato_historial),#elimina un dato del historial
 

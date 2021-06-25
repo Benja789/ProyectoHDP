@@ -60,41 +60,42 @@ const Tarjeta = (props) =>{
 
   return (
     <div className={classes.div}>
-        <Card className={classes.root}>
-        <CardContent>
-            <Typography className={classes.title} color="textSecondary" gutterBottom>
-              {fechaInicio.getDate()} {meses[fechaInicio.getMonth()]} {fechaInicio.getFullYear()} a 
-              {" "+fechaFin.getDate()} {meses[fechaFin.getMonth()]} {fechaFin.getFullYear()} 
-            </Typography>
-            <Typography variant="h5" component="h2">Zona {props.zona.nombrezona}</Typography>
-            <Typography className={classes.pos} color="textSecondary">Tipo de gasolina</Typography>
-            <TableContainer component={Paper}>
-              <Table className={classes.table} aria-label="simple table"> 
-                <TableHead>
-                  <TableRow>
-                    <TableCell >Tipo</TableCell>
-                    <TableCell align="left">Precio</TableCell>
-                    <TableCell align="left">Variacion</TableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                <TableRow key={props.zona.idzona}>           
-                  <TableCell align="left">Especial</TableCell>
-                  <TableCell align="left">$ {props.zona.especial}  </TableCell>  
-                  <TableCell align ="left">$ {props.zona.variacion_e}</TableCell>
+      <br/>
+      <Card className={classes.root}>
+      <CardContent>
+          <Typography className={classes.title} color="textSecondary" gutterBottom>
+            {fechaInicio.getDate()} {meses[fechaInicio.getMonth()]} {fechaInicio.getFullYear()} a 
+            {" "+fechaFin.getDate()} {meses[fechaFin.getMonth()]} {fechaFin.getFullYear()} 
+          </Typography>
+          <Typography variant="h5" component="h2">Zona {props.zona.nombrezona}</Typography>
+          <Typography className={classes.pos} color="textSecondary">Tipo de gasolina</Typography>
+          <TableContainer component={Paper}>
+            <Table className={classes.table} aria-label="simple table"> 
+              <TableHead>
+                <TableRow>
+                  <TableCell >Tipo</TableCell>
+                  <TableCell align="left">Precio</TableCell>
+                  <TableCell align="left">Variacion</TableCell>
                 </TableRow>
+              </TableHead>
+              <TableBody>
+              <TableRow key={props.zona.idzona}>           
+                <TableCell align="left">Especial</TableCell>
+                <TableCell align="left">$ {props.zona.especial}  </TableCell>  
+                <TableCell align ="left">$ {props.zona.variacion_e}</TableCell>
+              </TableRow>
 
-                <TableRow key={props.zona.idzona}>           
-                  <TableCell align="left">Regular</TableCell>
-                  <TableCell align="left">$ {props.zona.regular}</TableCell>  
-                  <TableCell align ="left">$ {props.zona.variacion_r}</TableCell>
-                </TableRow>
-                <TableRow key={props.zona.idzona}>           
-                  <TableCell align="left">Disiel</TableCell>
-                  <TableCell align="left">$ {props.zona.diesel}</TableCell>  
-                  <TableCell align ="left">$ {props.zona.variacion_d}</TableCell>
-                </TableRow>
-              </TableBody>
+              <TableRow key={props.zona.idzona}>           
+                <TableCell align="left">Regular</TableCell>
+                <TableCell align="left">$ {props.zona.regular}</TableCell>  
+                <TableCell align ="left">$ {props.zona.variacion_r}</TableCell>
+              </TableRow>
+              <TableRow key={props.zona.idzona}>           
+                <TableCell align="left">Disiel</TableCell>
+                <TableCell align="left">$ {props.zona.diesel}</TableCell>  
+                <TableCell align ="left">$ {props.zona.variacion_d}</TableCell>
+              </TableRow>
+            </TableBody>
             
             </Table>
           </TableContainer>

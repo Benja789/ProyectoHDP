@@ -101,64 +101,6 @@ def registrarse(request):
         return JsonResponse({"Creado":True}, safe=False)
     return JsonResponse({"Creado":False}, safe=False)
 
-
-@csrf_exempt
-def ultimosCalculos (request):
-    #Metodo que trae los ultimos calculos del usuario
-    id =request.POST['dui']
-    periodoUsuario = list(Prediccion.objects.filter(dui=id).values().order_by('-idperiodo')[:9])
-    if len(periodoUsuario)>0:
-        del periodoUsuario
-        zonas = list(Zona.objects.values())
-        prediccion = list(Prediccion.objects.values(
-            'idperiodo_id',
-            'idzona_id',
-            'idgasolina_id',
-            'precio',
-            'variacion').filter(dui=id).order_by('-idprediccion')[:9])
-        periodo = list(Periodo.objects.values('fechainicio','fechafin').order_by('-idperiodo')[:1])
-        datosEnviados=[]
-        #Arreglo del diccionario para mandaro como respuesta a una peticion de Ajax
-        for i in range(3):
-            diccionario = {
-                "idzona":"",
-                "nombrezona":"",
-                "idperiodo": "",
-                "inicio":"",
-                "fin":"",
-                "especial":"",
-                "regular":"",
-                "diesel":"",
-                "variacion_e":"",
-                "variacion_r":"",
-                "variacion_d":"",
-                "descripcion":True}
-
-            diccionario["idzona"]=zonas[i]["idzona"]
-            diccionario["nombrezona"]=zonas[i]["nombrezona"]
-            diccionario["idperiodo"]= prediccion[i]["idperiodo_id"]
-            diccionario["inicio"]= periodo[0]["fechainicio"].strftime("%Y/%m/%d")
-            diccionario["fin"]= periodo[0]["fechafin"].strftime("%Y/%m/%d")
-
-            for j in range(len(prediccion)):
-                if prediccion[j]["idzona_id"]==diccionario["idzona"]:
-                    if prediccion[j]["idgasolina_id"]=="ES01":
-                        diccionario["especial"]= prediccion[j]["precio"]
-                        diccionario["variacion_e"]=prediccion[j]["variacion"]
-
-                    if prediccion[j]["idgasolina_id"]=="RE02":
-                        diccionario["regular"]= prediccion[j]["precio"]
-                        diccionario["variacion_r"]=prediccion[j]["variacion"]
-
-                    if prediccion[j]["idgasolina_id"] =="DI03":
-                        diccionario["diesel"]= prediccion[j]["precio"]
-                        diccionario["variacion_d"]=prediccion[j]["variacion"]
-
-            datosEnviados.append(diccionario)
-            del(diccionario)
-        return JsonResponse (datosEnviados, safe = False)
-    return JsonResponse({"descripcion": False}, safe=False)
-
 @csrf_exempt
 def historialUsuario (request):
     #Metodo que trae el historial del usuario

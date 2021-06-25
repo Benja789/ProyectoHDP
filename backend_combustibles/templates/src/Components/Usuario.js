@@ -159,7 +159,7 @@ const Usuario = (props) => {
      }).catch(err=>{
       window.alert("Ocurrio un error al traer la informacion del usuario")
     })
-    axios.post(props.url+"/jsonultimoscalculos", formData).then((res)=>{  
+    axios.get(props.url+"/jsonpreciosvigentes").then((res)=>{  
       if (res.data.length>0){
         setUltimo(res.data);
       }

@@ -276,6 +276,9 @@ const Inicio = (props) => {
           <Grafico zona={central} nombre={"Central"}/>
           <br/>
           <Grafico zona={oriental} nombre={"Oriental"}/>
+          <br/>
+          <br/>
+          <Typography variant="h5">Tabla de los periodos</Typography>
           <TablaPeriodo periodo={periodo}/>
         </TabPanel>
         </CardContent>
