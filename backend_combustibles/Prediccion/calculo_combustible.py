@@ -43,7 +43,7 @@ def generacion_modelo(nombre_zona,fob, unl_87,unl_93,butano, flete_marino, marge
 
     ac[0] = (0.28*(unl87 - butane)) + (((unl87 - unl93)/6)*4) # Especial
     ac[1] = (0.28*(unl87 - butane)) + (((unl87 - unl93)/6)*2) # Regular
-    ac[2] = 1.913                                             # Diesel
+    ac[2] = 1.713                                             # Diesel
 
     #Flete local con orden en zonas [Central, Occidental, Oriental] (Hasta 2019)
     #fl = [0.036,0.044,0.074] 
