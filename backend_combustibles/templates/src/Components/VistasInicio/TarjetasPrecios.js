@@ -91,7 +91,7 @@ const Tarjeta = (props) =>{
                 <TableCell align ="left">$ {props.zona.variacion_r}</TableCell>
               </TableRow>
               <TableRow key={props.zona.idzona}>           
-                <TableCell align="left">Disiel</TableCell>
+                <TableCell align="left">Diesel</TableCell>
                 <TableCell align="left">$ {props.zona.diesel}</TableCell>  
                 <TableCell align ="left">$ {props.zona.variacion_d}</TableCell>
               </TableRow>

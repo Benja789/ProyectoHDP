@@ -112,7 +112,7 @@ const Tabla = (props) =>{
                 {row.idzona_id ==="ZOCC" && <TableCell align ="left">Occidental</TableCell>}
                 {row.idzona_id ==="ZCEN" && <TableCell align ="left">Central</TableCell>}             
                 {/*Gasolinas */}
-                {row.idgasolina_id ==="DI03" && <TableCell align="left">Disiel</TableCell>}
+                {row.idgasolina_id ==="DI03" && <TableCell align="left">Diesel</TableCell>}
                 {row.idgasolina_id ==="RE02" && <TableCell align="left">Regular</TableCell>}
                 {row.idgasolina_id ==="ES01" && <TableCell align="left">Super</TableCell>}
                 <TableCell align="right">$ {row.precio}</TableCell>

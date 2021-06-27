@@ -275,7 +275,7 @@ const Usuario = (props) => {
               {ultimosDatos.length!==0 &&<Tarjeta zona={ultimosDatos[2]}/>}
               <br/>
               <br/>
-              <Typography variant="h5">Tabla del historial</Typography>
+              <Typography variant="h5">Tabla del historial de modelos creados</Typography>
               {historial.length===0 && <Typography variant="h8">No hay registros </Typography>}
               {historial.length !==0 &&<Tabla url ={props.url} prediccion={historial}/>}
             </TabPanel>
